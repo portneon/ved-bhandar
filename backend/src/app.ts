@@ -1,16 +1,16 @@
 import express, { Express, NextFunction, Request, Response } from "express";
 import cors from "cors";
 import path from "path";
-import { documentsRouter } from "./api/routes/documents.routes";
-import { questionSetsRouter } from "./api/routes/questionSets.routes";
+import { booksRouter } from "./api/routes/books.routes";
+import { generationsRouter } from "./api/routes/generations.routes";
 
 export function createApp(): Express {
   const app = express();
   app.use(cors({ origin: process.env.CORS_ORIGIN ?? "*" }));
   app.use(express.json());
   app.use("/files", express.static(path.resolve(process.cwd(), process.env.UPLOAD_DIR ?? "uploads")));
-  app.use("/api/documents", documentsRouter());
-  app.use("/api/question-sets", questionSetsRouter());
+  app.use("/api/books", booksRouter());
+  app.use("/api", generationsRouter());
   app.get("/health", (_req, res) => res.json({ ok: true }));
 
   // Last-resort safety net: any error that reaches here (sync throw forwarded by

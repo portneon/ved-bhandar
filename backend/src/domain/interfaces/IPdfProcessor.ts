@@ -1,5 +1,10 @@
+export interface PdfLine {
+  page: number;
+  text: string;
+  fontSize: number;
+}
+
 export interface IPdfProcessor {
-  getPageCount(fileBuffer: Buffer): Promise<number>;
-  extractPageText(fileBuffer: Buffer, pageNumber: number): Promise<string>;
-  renderPageThumbnail(fileBuffer: Buffer, pageNumber: number): Promise<Buffer>;
+  getPageCount(buffer: Buffer): Promise<number>;
+  extractStructuredPage(buffer: Buffer, pageNumber: number): Promise<PdfLine[]>;
 }

@@ -1,6 +1,6 @@
 import { injectable } from "tsyringe";
 import OpenAI from "openai";
-import { ILlmProvider } from "../../domain/interfaces/ILlmProvider";
+import { ILlmProvider, LlmCompletion } from "../../domain/interfaces/ILlmProvider";
 
 @injectable()
 export class OpenRouterProvider implements ILlmProvider {
@@ -20,7 +20,7 @@ export class OpenRouterProvider implements ILlmProvider {
     return this.client;
   }
 
-  async complete(systemPrompt: string, userPrompt: string, model: string): Promise<string> {
+  async complete(systemPrompt: string, userPrompt: string, model: string): Promise<LlmCompletion> {
     const response = await this.getClient().chat.completions.create({
       model,
       messages: [
@@ -32,7 +32,13 @@ export class OpenRouterProvider implements ILlmProvider {
     if (!content) {
       throw new Error("LLM returned an empty response");
     }
-    return content;
+    return {
+      content,
+      usage: {
+        inputTokens: response.usage?.prompt_tokens ?? 0,
+        outputTokens: response.usage?.completion_tokens ?? 0,
+      },
+    };
   }
 
   async *stream(systemPrompt: string, userPrompt: string, model: string): AsyncIterable<string> {
