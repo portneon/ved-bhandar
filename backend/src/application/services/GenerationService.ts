@@ -239,6 +239,7 @@ export class GenerationService {
       output: completion.usage.outputTokens,
     });
 
+    const slotsById = new Map(slots.map((slot) => [slot.slotId, slot]));
     const results = new Map<string, { data: ParsedQuestion } | { reason: string }>();
     try {
       const parsed = generationResponseSchema.parse(JSON.parse(extractJson(completion.content)));
@@ -246,11 +247,12 @@ export class GenerationService {
         if (item.skip) {
           results.set(item.slotId, { reason: item.skip });
         } else if (item.stem && item.answer && item.explanation) {
+          const isMcq = slotsById.get(item.slotId)?.questionType === "mcq";
           results.set(item.slotId, {
             data: {
               chunkIds: item.chunkIds ?? [],
               stem: item.stem,
-              options: item.options ?? null,
+              options: isMcq ? (item.options ?? null) : null,
               answer: item.answer,
               explanation: item.explanation,
             },

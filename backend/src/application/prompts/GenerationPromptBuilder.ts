@@ -14,6 +14,7 @@ Rules:
   6 Create: design or propose something that combines the ideas
 - Difficulty: easy = direct wording; medium = one step of reasoning; hard = two steps or an unfamiliar context.
 - MCQ: exactly 4 options, exactly one correct, wrong options plausible and from the same topic. No "all of the above".
+- short_answer and long_answer: set "options" to null. Never attach multiple-choice options to these types.
 - Every question lists the chunk ids it uses.
 - Use clear language for the given class.
 Return JSON: {"questions":[{"slotId","chunkIds","stem","options","answer","explanation","bloom"}]}`;

@@ -23,6 +23,7 @@ export class OpenRouterProvider implements ILlmProvider {
   async complete(systemPrompt: string, userPrompt: string, model: string): Promise<LlmCompletion> {
     const response = await this.getClient().chat.completions.create({
       model,
+      max_tokens: 4096,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
@@ -31,6 +32,11 @@ export class OpenRouterProvider implements ILlmProvider {
     const content = response.choices[0]?.message?.content;
     if (!content) {
       throw new Error("LLM returned an empty response");
+    }
+    if (response.choices[0]?.finish_reason === "length") {
+      // Don't throw: callers already treat malformed/incomplete JSON as a
+      // parse failure and retry or fall back gracefully on their own.
+      console.warn("LLM response hit max_tokens and was truncated; downstream parsing will likely fail and retry.");
     }
     return {
       content,
@@ -44,6 +50,7 @@ export class OpenRouterProvider implements ILlmProvider {
   async *stream(systemPrompt: string, userPrompt: string, model: string): AsyncIterable<string> {
     const completion = await this.getClient().chat.completions.create({
       model,
+      max_tokens: 4096,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
