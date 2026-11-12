@@ -55,7 +55,7 @@ export function PageSplitSlider({ enabled, onToggle, ranges, onChange }: PageSpl
             </div>
           ))}
           <button type="button" className="secondary" onClick={() => onChange([...ranges, emptyRange()])}>
-            + Add page range
+            + Add Page Range
           </button>
         </div>
       )}

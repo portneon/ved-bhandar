@@ -66,7 +66,7 @@ export function QuestionCard({ question, index, generationId, onChanged }: Quest
             <span>Stem</span>
             <textarea value={stem} onChange={(e) => setStem(e.target.value)} />
           </label>
-          {question.options && (
+          {question.options && question.options.length > 0 && (
             <div className="option-edit-list">
               {options.map((option, i) => (
                 <input
@@ -98,7 +98,7 @@ export function QuestionCard({ question, index, generationId, onChanged }: Quest
       ) : (
         <>
           <p className="question-stem">{question.stem}</p>
-          {question.options && (
+          {question.options && question.options.length > 0 && (
             <ol type="a" className="option-list">
               {question.options.map((option, i) => (
                 <li key={i}>{option}</li>

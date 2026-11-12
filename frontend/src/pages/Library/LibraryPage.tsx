@@ -26,7 +26,7 @@ export function LibraryPage(): JSX.Element {
       <h1>Ved-Bhandar</h1>
       <p className="muted">Upload a textbook, then build a question paper from it.</p>
       <UploadForm onUploaded={refresh} />
-      <h2>Your books</h2>
+      <h2>Your Books</h2>
       {loading ? <p className="muted">Loading…</p> : <BookList books={books} />}
     </div>
   );

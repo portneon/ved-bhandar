@@ -83,7 +83,7 @@ export function SlotRows({ items, onChange, difficulty, onDifficultyChange }: Sl
         ))}
       </div>
       <button type="button" className="secondary" onClick={addRow}>
-        + Add row
+        + Add Row
       </button>
 
       <label className="field">

@@ -32,6 +32,7 @@ export function ChapterPicker({ chapters, selected, onChange, topic, onTopicChan
           value={topic}
           onChange={(e) => onTopicChange(e.target.value)}
           placeholder="e.g. photosynthesis — leave blank to cover the whole chapter"
+          autoComplete="off"
         />
       </label>
     </section>

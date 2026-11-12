@@ -59,23 +59,23 @@ export function UploadForm({ onUploaded }: { onUploaded: () => void }): JSX.Elem
 
   return (
     <form className="card" onSubmit={handleSubmit} aria-label="Upload a textbook">
-      <h2>Upload a textbook</h2>
+      <h2>Upload a Textbook</h2>
       <div className="field-grid">
         <label className="field">
           <span>Title</span>
-          <input value={title} onChange={(e) => setTitle(e.target.value)} required />
+          <input value={title} onChange={(e) => setTitle(e.target.value)} autoComplete="off" required />
         </label>
         <label className="field">
           <span>Board</span>
-          <input value={board} onChange={(e) => setBoard(e.target.value)} placeholder="CBSE" required />
+          <input value={board} onChange={(e) => setBoard(e.target.value)} placeholder="CBSE" autoComplete="off" required />
         </label>
         <label className="field">
           <span>Class</span>
-          <input value={grade} onChange={(e) => setGrade(e.target.value)} placeholder="10" required />
+          <input value={grade} onChange={(e) => setGrade(e.target.value)} placeholder="10" autoComplete="off" required />
         </label>
         <label className="field">
           <span>Subject</span>
-          <input value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="Science" required />
+          <input value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="Science" autoComplete="off" required />
         </label>
       </div>
 
@@ -123,7 +123,7 @@ export function UploadForm({ onUploaded }: { onUploaded: () => void }): JSX.Elem
           </div>
         ))}
         <button type="button" className="secondary" onClick={addChapterRow}>
-          + Add chapter
+          + Add Chapter
         </button>
       </fieldset>
 
