@@ -2,8 +2,12 @@ import { injectable, inject } from "tsyringe";
 import { Request, Response } from "express";
 import { z } from "zod";
 import { Book } from "../../domain/entities/Book";
+import { Generation } from "../../domain/entities/Generation";
+import { QuestionBankEntry } from "../../domain/entities/QuestionBankEntry";
 import { BookIngestionService } from "../../application/services/BookIngestionService";
 import { BookQueryService } from "../../application/services/BookQueryService";
+import { BookDeletionService } from "../../application/services/BookDeletionService";
+import { GenerationService } from "../../application/services/GenerationService";
 
 const chapterHintSchema = z.object({
   no: z.number().int(),
@@ -17,6 +21,8 @@ export class BooksController {
   constructor(
     @inject(BookIngestionService) private readonly ingestionService: BookIngestionService,
     @inject(BookQueryService) private readonly queryService: BookQueryService,
+    @inject(BookDeletionService) private readonly deletionService: BookDeletionService,
+    @inject(GenerationService) private readonly generationService: GenerationService,
   ) {}
 
   upload = async (req: Request, res: Response): Promise<void> => {
@@ -41,23 +47,106 @@ export class BooksController {
       }
     }
 
-    const book = await this.ingestionService.upload({ title, board, grade, subject, buffer: file.buffer, chapterHints });
+    const book = await this.ingestionService.upload({
+      userId: req.user!.id,
+      title,
+      board,
+      grade,
+      subject,
+      buffer: file.buffer,
+      chapterHints,
+    });
     res.status(202).json(this.toDto(book));
   };
 
-  list = async (_req: Request, res: Response): Promise<void> => {
-    const books = await this.queryService.listBooks();
+  list = async (req: Request, res: Response): Promise<void> => {
+    const books = await this.queryService.listBooks(req.user!.id);
     res.json(books.map((book) => this.toDto(book)));
   };
 
   get = async (req: Request, res: Response): Promise<void> => {
-    const book = await this.queryService.getBook(req.params.id);
+    const book = await this.queryService.getBook(req.params.id, req.user!.id);
     if (!book) {
       res.status(404).json({ error: "Book not found" });
       return;
     }
     res.json(this.toDto(book));
   };
+
+  delete = async (req: Request, res: Response): Promise<void> => {
+    const deleted = await this.deletionService.deleteBook(req.params.id, req.user!.id);
+    if (!deleted) {
+      res.status(404).json({ error: "Book not found" });
+      return;
+    }
+    res.status(204).end();
+  };
+
+  listGenerations = async (req: Request, res: Response): Promise<void> => {
+    const book = await this.queryService.getBook(req.params.id, req.user!.id);
+    if (!book) {
+      res.status(404).json({ error: "Book not found" });
+      return;
+    }
+    const generations = await this.generationService.listForBook(req.params.id, req.user!.id);
+    res.json(generations.map((generation) => this.generationSummaryToDto(generation)));
+  };
+
+  questionBank = async (req: Request, res: Response): Promise<void> => {
+    const book = await this.queryService.getBook(req.params.id, req.user!.id);
+    if (!book) {
+      res.status(404).json({ error: "Book not found" });
+      return;
+    }
+    const chapterParam = req.query.chapter;
+    const chapter = typeof chapterParam === "string" && chapterParam.trim() !== "" ? Number(chapterParam) : undefined;
+    if (chapter !== undefined && Number.isNaN(chapter)) {
+      res.status(400).json({ error: "chapter must be a number" });
+      return;
+    }
+    const entries = await this.queryService.listQuestionBank(req.params.id, req.user!.id, chapter);
+    res.json(entries.map((entry) => this.questionBankEntryToDto(entry)));
+  };
+
+  private questionBankEntryToDto(entry: QuestionBankEntry) {
+    return {
+      id: entry.id,
+      bookId: entry.bookId,
+      generationId: entry.generationId,
+      slotId: entry.slotId,
+      chapters: entry.chapters,
+      pages: entry.pages,
+      questionType: entry.questionType,
+      bloom: entry.bloom,
+      marks: entry.marks,
+      difficulty: entry.difficulty,
+      stem: entry.stem,
+      options: entry.options,
+      answer: entry.answer,
+      explanation: entry.explanation,
+      status: entry.status,
+      createdAt: entry.createdAt,
+      updatedAt: entry.updatedAt,
+    };
+  }
+
+  private generationSummaryToDto(generation: Generation) {
+    const total = generation.questions.length;
+    const accepted = generation.questions.filter((q) => q.status === "accepted").length;
+    const exportable = generation.questions.filter(
+      (q) => q.stem !== null && (q.status === "draft" || q.status === "accepted"),
+    ).length;
+    return {
+      id: generation.id,
+      bookId: generation.bookId,
+      settings: generation.settings,
+      tokenUsage: generation.tokenUsage,
+      createdAt: generation.createdAt,
+      totalQuestions: total,
+      acceptedQuestions: accepted,
+      exportableQuestions: exportable,
+    };
+  }
 
   private toDto(book: Book) {
     return {

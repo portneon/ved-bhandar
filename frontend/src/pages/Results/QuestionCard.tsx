@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { patchQuestion, regenerateSlot } from "../../api/generations";
-import { GeneratedQuestion } from "../../types";
+import { patchQuestion, refineQuestion, regenerateSlot } from "../../api/generations";
+import { GeneratedQuestion, willIncludeInPdfExport } from "../../types";
 import { SlotFailureNotice } from "./SlotFailureNotice";
+import { Math } from "../../components/Math";
 
 interface QuestionCardProps {
   question: GeneratedQuestion;
@@ -11,19 +12,28 @@ interface QuestionCardProps {
 }
 
 export function QuestionCard({ question, index, generationId, onChanged }: QuestionCardProps): JSX.Element {
-  const [editing, setEditing] = useState(false);
+  const [editing, setEditing] = useState(question.isManual && question.stem === null);
   const [stem, setStem] = useState(question.stem ?? "");
   const [options, setOptions] = useState(question.options ?? []);
   const [answer, setAnswer] = useState(question.answer ?? "");
   const [explanation, setExplanation] = useState(question.explanation ?? "");
   const [busy, setBusy] = useState(false);
+  const [instruction, setInstruction] = useState("");
+  const [refineError, setRefineError] = useState<string | null>(null);
 
   if (question.status === "no_candidates" || question.status === "failed") {
-    return <SlotFailureNotice question={question} />;
+    return (
+      <SlotFailureNotice
+        question={question}
+        index={index}
+        generationId={generationId}
+        onChanged={onChanged}
+      />
+    );
   }
   if (question.status === "pending") {
     return (
-      <div className="card question-card question-pending">
+      <div className="exam-question question-pending">
         <p className="muted">Generating…</p>
       </div>
     );
@@ -50,14 +60,32 @@ export function QuestionCard({ question, index, generationId, onChanged }: Quest
       setEditing(false);
     });
 
+  const refine = async (): Promise<void> => {
+    if (!instruction.trim()) return;
+    setBusy(true);
+    setRefineError(null);
+    try {
+      await refineQuestion(generationId, question.slotId, instruction.trim());
+      setInstruction("");
+      onChanged();
+    } catch (err) {
+      setRefineError(err instanceof Error ? err.message : "Could not refine this question");
+    } finally {
+      setBusy(false);
+    }
+  };
+
   return (
-    <div className="card question-card">
+    <div className="exam-question">
       <div className="question-meta">
-        <span>{index}.</span>
+        <span className="question-number">{index}.</span>
         <span>Bloom {question.bloom}</span>
         <span>{question.marks} mark(s)</span>
-        <span>p. {question.pages.join(", ")}</span>
+        {question.pages.length > 0 ? <span>p. {question.pages.join(", ")}</span> : <span>Manual</span>}
         <span className={`status-badge status-${question.status}`}>{question.status}</span>
+        <span className={`pdf-export-badge ${willIncludeInPdfExport(question) ? "in" : "out"}`}>
+          {willIncludeInPdfExport(question) ? "In PDF export" : "Not exported"}
+        </span>
       </div>
 
       {editing ? (
@@ -97,18 +125,20 @@ export function QuestionCard({ question, index, generationId, onChanged }: Quest
         </div>
       ) : (
         <>
-          <p className="question-stem">{question.stem}</p>
+          <Math as="p" className="question-stem" text={question.stem ?? ""} />
           {question.options && question.options.length > 0 && (
             <ol type="a" className="option-list">
               {question.options.map((option, i) => (
-                <li key={i}>{option}</li>
+                <li key={i}>
+                  <Math text={option} />
+                </li>
               ))}
             </ol>
           )}
           <p className="question-answer">
-            <strong>Answer:</strong> {question.answer}
+            <strong>Answer:</strong> <Math text={question.answer ?? ""} />
           </p>
-          {question.explanation && <p className="muted">{question.explanation}</p>}
+          {question.explanation && <Math as="p" className="muted" text={question.explanation} />}
           <div className="question-actions">
             <button
               type="button"
@@ -120,14 +150,16 @@ export function QuestionCard({ question, index, generationId, onChanged }: Quest
             <button type="button" className="secondary" disabled={busy} onClick={() => setEditing(true)}>
               Edit
             </button>
-            <button
-              type="button"
-              className="secondary"
-              disabled={busy}
-              onClick={() => run(() => regenerateSlot(generationId, question.slotId))}
-            >
-              Regenerate
-            </button>
+            {!question.isManual && (
+              <button
+                type="button"
+                className="secondary"
+                disabled={busy}
+                onClick={() => run(() => regenerateSlot(generationId, question.slotId))}
+              >
+                Retry
+              </button>
+            )}
             <button
               type="button"
               className="danger"
@@ -137,6 +169,27 @@ export function QuestionCard({ question, index, generationId, onChanged }: Quest
               Reject
             </button>
           </div>
+
+          <div className="refine-row">
+            <input
+              type="text"
+              aria-label="Instruction for AI refinement"
+              placeholder="Tell the AI how to change this question — e.g. make it harder, simplify the wording…"
+              value={instruction}
+              onChange={(e) => setInstruction(e.target.value)}
+              disabled={busy}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  refine();
+                }
+              }}
+            />
+            <button type="button" className="secondary" disabled={busy || !instruction.trim()} onClick={refine}>
+              Refine
+            </button>
+          </div>
+          {refineError && <p className="error refine-error">{refineError}</p>}
         </>
       )}
     </div>

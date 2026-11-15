@@ -1,5 +1,5 @@
 import { api } from "./client";
-import { Generation, GenerationSettings } from "../types";
+import { GeneratedQuestion, Generation, GenerationSettings, QuestionType } from "../types";
 
 export interface QuestionPatch {
   stem?: string;
@@ -21,10 +21,25 @@ export function regenerateSlot(generationId: string, slotId: string): Promise<vo
   return api.post<void>(`/api/questions/${generationId}/${slotId}/regenerate`);
 }
 
+export function refineQuestion(generationId: string, slotId: string, instruction: string): Promise<GeneratedQuestion> {
+  return api.post<GeneratedQuestion>(`/api/questions/${generationId}/${slotId}/refine`, { instruction });
+}
+
 export function patchQuestion(generationId: string, slotId: string, patch: QuestionPatch): Promise<void> {
   return api.patch<void>(`/api/questions/${generationId}/${slotId}`, patch);
 }
 
-export function exportUrl(generationId: string): string {
-  return api.fileUrl(`/api/generations/${generationId}/export`);
+export interface ManualQuestionInput {
+  questionType: QuestionType;
+  bloom?: number;
+  marks: number;
+}
+
+export function addManualQuestion(generationId: string, input: ManualQuestionInput): Promise<GeneratedQuestion> {
+  return api.post<GeneratedQuestion>(`/api/questions/${generationId}/manual`, input);
+}
+
+export function exportPath(generationId: string, templateId?: string): string {
+  const query = templateId ? `?templateId=${templateId}` : "";
+  return `/api/generations/${generationId}/export${query}`;
 }

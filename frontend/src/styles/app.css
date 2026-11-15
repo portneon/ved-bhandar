@@ -1,0 +1,406 @@
+/*
+  Re-themes the Library / Configure / Results pages with the same palette,
+  type and components as the marketing site (see Landing/landing.css).
+
+  Every page root pairs the ".landing-page" class (which defines the --l-*
+  tokens and base resets) with ".app-page" (the overrides below), so the
+  --l-* variables already exist by the time these rules read them.
+*/
+
+.app-page { min-height: 100vh; }
+.app-page .l-nav { position: static; }
+
+/* ---------- App nav chrome: links, user menu, breadcrumbs ---------- */
+.app-nav-chrome { border-bottom: 1px solid var(--l-border); margin-bottom: 0; }
+.app-nav-chrome .l-nav { border-bottom: none; }
+.app-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+.app-nav-links a { color: var(--l-ink); text-decoration: none; }
+.app-nav-links a:hover { color: var(--l-accent-ink); }
+.app-nav-user { display: flex; align-items: center; gap: 12px; }
+.app-nav-username { font-size: 0.85rem; color: var(--l-muted); }
+.app-nav-user button { padding: 6px 14px; font-size: 0.82rem; }
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px 0;
+  font-size: 0.82rem;
+  color: var(--l-muted);
+}
+.breadcrumb-item { display: inline-flex; align-items: center; gap: 6px; }
+.breadcrumb-item a { color: var(--l-muted); text-decoration: none; }
+.breadcrumb-item a:hover { color: var(--l-accent-ink); text-decoration: underline; }
+.breadcrumb-sep { color: var(--l-border); }
+
+/* ---------- Banner (PageHeader) ---------- */
+.app-banner {
+  background: radial-gradient(120% 160% at 15% 0%, var(--l-hero-bg-2), var(--l-hero-bg) 65%);
+  color: var(--l-hero-fg);
+  border-radius: 0 0 24px 24px;
+  padding-block: 36px 40px;
+  margin-bottom: 36px;
+}
+.app-banner-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.app-banner h1 {
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  font-weight: 600;
+  margin: 0 0 10px;
+}
+.app-banner-sub {
+  color: var(--l-hero-muted);
+  font-size: 0.98rem;
+  line-height: 1.55;
+  max-width: 54ch;
+}
+.app-banner-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.app-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ---------- Cards & forms ---------- */
+.app-page .card {
+  background: var(--l-surface);
+  border: 1px solid var(--l-border);
+  border-radius: var(--l-radius-lg);
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--l-shadow-sm);
+}
+.app-page h2 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0 0 14px;
+}
+.app-page .muted { color: var(--l-muted); }
+.app-page .error { color: #b3261e; }
+
+.app-page input,
+.app-page select,
+.app-page textarea {
+  border: 1px solid var(--l-border);
+  border-radius: var(--l-radius-sm);
+  background: var(--l-surface-2);
+  color: var(--l-ink);
+  padding: 9px 12px;
+  min-height: 40px;
+  font-family: var(--l-font-body);
+}
+.app-page textarea { min-height: 72px; }
+.app-page .field span { color: var(--l-muted); font-size: 0.84rem; }
+
+.app-page button,
+.app-page .button-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: var(--l-radius-sm);
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: var(--l-font-body);
+  border: 1px solid var(--l-hero-bg);
+  background: var(--l-hero-bg);
+  color: var(--l-hero-fg);
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.15s ease, border-color 0.15s ease;
+}
+.app-page button:hover:not(:disabled),
+.app-page .button-link:hover { opacity: 0.88; }
+.app-page button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.app-page button.secondary {
+  background: transparent;
+  color: var(--l-ink);
+  border-color: var(--l-border);
+}
+.app-page button.secondary:hover:not(:disabled) { border-color: var(--l-muted); opacity: 1; }
+
+.app-page button.danger {
+  background: transparent;
+  color: #b3261e;
+  border-color: #b3261e;
+}
+.app-page button.danger:hover:not(:disabled) { background: rgba(179, 38, 30, 0.08); opacity: 1; }
+
+.app-page button.icon-button {
+  padding: 4px 10px;
+  background: transparent;
+  color: var(--l-muted);
+  border-color: var(--l-border);
+}
+
+/*
+  Buttons placed in PageHeader's `actions` slot render inside the dark
+  banner (.app-banner.l-on-dark), but the rules above assume a light
+  surface behind them — a default button's dark-green background blends
+  into the banner, and a secondary button's dark text on that same dark
+  background is unreadable. Mirror landing.css's .l-on-dark .l-btn
+  treatment for the plain button/.button-link system used here.
+*/
+.app-page .l-on-dark button,
+.app-page .l-on-dark .button-link {
+  background: var(--l-yellow);
+  border-color: var(--l-yellow);
+  color: var(--l-yellow-ink);
+}
+.app-page .l-on-dark button.secondary {
+  background: transparent;
+  border-color: var(--l-hero-border);
+  color: var(--l-hero-fg);
+}
+.app-page .l-on-dark button.secondary:hover:not(:disabled) {
+  border-color: var(--l-hero-fg);
+}
+.app-page .l-on-dark button.danger {
+  background: transparent;
+  border-color: #ff9a8f;
+  color: #ff9a8f;
+}
+.app-page .l-on-dark button:disabled {
+  opacity: 0.5;
+}
+
+.app-page .chapter-hints {
+  border: 1px dashed var(--l-border);
+  border-radius: var(--l-radius-md);
+}
+.app-page .chapter-hints legend { color: var(--l-muted); }
+
+/* ---------- Book list ---------- */
+.app-page .book-row h3 { font-family: var(--l-font-display); }
+.app-page .status-badge {
+  font-family: var(--l-font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-size: 0.68rem;
+  background: var(--l-surface-2);
+  color: var(--l-muted);
+}
+.app-page .status-ready,
+.app-page .status-draft,
+.app-page .status-accepted {
+  background: #d9f3c8;
+  color: #27551f;
+}
+.app-page .status-failed,
+.app-page .status-rejected,
+.app-page .status-no_candidates {
+  background: #fbdcd8;
+  color: #8a2a21;
+}
+.app-page .status-parsing,
+.app-page .status-tagging,
+.app-page .status-embedding,
+.app-page .status-pending {
+  background: #fbead0;
+  color: #8a5a0f;
+}
+.app-page .progress-bar { background: var(--l-border); }
+.app-page .progress-bar-fill { background: var(--l-accent-ink); transition: width 0.4s ease; }
+
+.app-page .status-badge-row { display: inline-flex; align-items: center; gap: 7px; }
+.app-page .spinner {
+  width: 13px;
+  height: 13px;
+  border: 2px solid var(--l-border);
+  border-top-color: var(--l-accent-ink);
+  border-radius: 50%;
+  animation: app-spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes app-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- Question review / export: one continuous A4 sheet, not boxed cards ---------- */
+.app-page .exam-paper {
+  background: var(--l-surface);
+  box-shadow: var(--l-shadow-md);
+  border-radius: 2px;
+  max-width: 800px;
+  margin: 0 auto 32px;
+  padding: 56px 64px 40px;
+}
+.app-page .exam-section + .exam-section { margin-top: 8px; }
+.app-page .exam-section-title {
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.95rem;
+  color: var(--l-muted);
+  margin: 36px 0 18px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--l-border);
+}
+.app-page .exam-section:first-child .exam-section-title { margin-top: 0; }
+
+.app-page .question-list { display: flex; flex-direction: column; }
+.app-page .exam-question {
+  padding: 18px 0;
+  border-top: 1px dashed var(--l-border);
+}
+.app-page .question-list > .exam-question:first-child { border-top: none; padding-top: 0; }
+
+.app-page .question-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 0.78rem;
+  color: var(--l-muted);
+  margin-bottom: 8px;
+}
+.app-page .question-meta .question-number {
+  font-family: var(--l-font-display);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--l-ink);
+}
+.app-page .question-stem {
+  font-family: var(--l-font-display);
+  font-weight: 600;
+  font-size: 1.02rem;
+}
+.app-page .exam-question .question-actions {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: none;
+}
+.app-page .exam-question .question-actions button {
+  padding: 6px 14px;
+  font-size: 0.82rem;
+}
+.app-page .question-failure { background: rgba(179, 38, 30, 0.04); }
+
+.app-page .refine-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.app-page .refine-row input {
+  flex: 1;
+  min-height: 34px;
+  padding: 6px 10px;
+  font-size: 0.82rem;
+  background: var(--l-bg);
+}
+.app-page .refine-row button {
+  padding: 6px 14px;
+  font-size: 0.82rem;
+}
+.app-page .refine-error { font-size: 0.8rem; margin-top: 6px; }
+
+.app-page .add-question-row {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px dashed var(--l-border);
+}
+.app-page .add-question-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.app-page .add-question-form .field { margin: 0; }
+
+.pdf-export-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--l-font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+.pdf-export-badge.in { background: #d9f3c8; color: #27551f; }
+.pdf-export-badge.out { background: var(--l-surface-2); color: var(--l-muted); }
+
+/*
+  .slot-row / .chapter-row / .page-split-row (index.css) use fixed
+  multi-column grids sized for desktop — below ~640px they no longer fit
+  the viewport and push the page into horizontal scroll. Stack them into
+  a single column instead, and hide the desktop-only header labels that
+  no longer line up once the row stacks.
+*/
+@media (max-width: 640px) {
+  .app-page .slot-row,
+  .app-page .chapter-row,
+  .app-page .page-split-row {
+    grid-template-columns: 1fr;
+  }
+  .app-page .slot-row-header {
+    display: none;
+  }
+  .app-page .slot-row .icon-button,
+  .app-page .chapter-row .icon-button,
+  .app-page .page-split-row .icon-button {
+    justify-self: start;
+  }
+}
+
+/* SlotRows wraps each control in a <label> (for the mobile-only field label below) — as a grid
+   item a <label> blockifies but its child select/input won't stretch to fill it on its own, so
+   make the label a column flexbox, which does stretch its child to full width by default. */
+.app-page .slot-row > label {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.mobile-field-label {
+  display: none;
+}
+@media (max-width: 640px) {
+  .mobile-field-label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--l-muted);
+    margin-bottom: 2px;
+  }
+}
+
+/* GenerationHistory reuses .book-row-main's h3, whose ellipsis/nowrap rule is sized for long book
+   titles — a short date string shouldn't be truncated when the row is narrow on mobile. */
+.app-page .history-row .book-row-main h3 {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.export-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.export-summary {
+  font-size: 0.85rem;
+  color: var(--l-hero-muted);
+}

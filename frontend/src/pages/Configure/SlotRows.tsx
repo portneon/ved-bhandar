@@ -48,34 +48,46 @@ export function SlotRows({ items, onChange, difficulty, onDifficultyChange }: Sl
         </div>
         {items.map((item, index) => (
           <div className="slot-row" key={index}>
-            <select aria-label="Question type" value={item.type} onChange={(e) => updateRow(index, { type: e.target.value as QuestionType })}>
-              {QUESTION_TYPES.map((t) => (
-                <option key={t.value} value={t.value}>
-                  {t.label}
-                </option>
-              ))}
-            </select>
-            <select aria-label="Bloom level" value={item.bloom} onChange={(e) => updateRow(index, { bloom: Number(e.target.value) })}>
-              {BLOOM_LEVELS.map((b) => (
-                <option key={b.value} value={b.value}>
-                  {b.label}
-                </option>
-              ))}
-            </select>
-            <input
-              aria-label="Question count"
-              type="number"
-              min={1}
-              value={item.count}
-              onChange={(e) => updateRow(index, { count: Number(e.target.value) })}
-            />
-            <input
-              aria-label="Marks per question"
-              type="number"
-              min={0}
-              value={item.marks}
-              onChange={(e) => updateRow(index, { marks: Number(e.target.value) })}
-            />
+            <label>
+              <span className="mobile-field-label">Type</span>
+              <select aria-label="Question type" value={item.type} onChange={(e) => updateRow(index, { type: e.target.value as QuestionType })}>
+                {QUESTION_TYPES.map((t) => (
+                  <option key={t.value} value={t.value}>
+                    {t.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span className="mobile-field-label">Bloom level</span>
+              <select aria-label="Bloom level" value={item.bloom} onChange={(e) => updateRow(index, { bloom: Number(e.target.value) })}>
+                {BLOOM_LEVELS.map((b) => (
+                  <option key={b.value} value={b.value}>
+                    {b.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span className="mobile-field-label">Count</span>
+              <input
+                aria-label="Question count"
+                type="number"
+                min={1}
+                value={item.count}
+                onChange={(e) => updateRow(index, { count: Number(e.target.value) })}
+              />
+            </label>
+            <label>
+              <span className="mobile-field-label">Marks each</span>
+              <input
+                aria-label="Marks per question"
+                type="number"
+                min={0}
+                value={item.marks}
+                onChange={(e) => updateRow(index, { marks: Number(e.target.value) })}
+              />
+            </label>
             <button type="button" className="icon-button" aria-label="Remove row" onClick={() => removeRow(index)}>
               ×
             </button>

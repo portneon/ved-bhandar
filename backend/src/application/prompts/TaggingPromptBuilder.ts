@@ -20,7 +20,7 @@ Use only what the text states. Return JSON: {"chunks":[{"id":...,...}]}`;
 export class TaggingPromptBuilder implements ITaggingPromptBuilder {
   build({ subject, grade, sectionPath, sectionTitle, chunks }: TaggingPromptInput): BuiltPrompt {
     const user = [
-      `Book: ${subject}, Class ${grade}. Section ${sectionPath} "${sectionTitle}"`,
+      `Book: ${subject}, ${grade}. Section ${sectionPath} "${sectionTitle}"`,
       ...chunks.map((chunk) => `[${chunk.id}] ${chunk.text}`),
     ].join("\n");
 

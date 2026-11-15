@@ -8,8 +8,11 @@ export async function ensureIndexes(db: Db): Promise<void> {
   const chunks = db.collection("chunks");
   await chunks.createIndex({ bookId: 1, chapter: 1, order: 1 });
   await chunks.createIndex({ bookId: 1, type: 1, maxBloom: 1 });
-  await db.collection("books").createIndex({ status: 1 });
-  await db.collection("generations").createIndex({ bookId: 1, createdAt: -1 });
+  await db.collection("books").createIndex({ userId: 1, status: 1 });
+  await db.collection("generations").createIndex({ userId: 1, bookId: 1, createdAt: -1 });
+  await db.collection("question_bank").createIndex({ userId: 1, bookId: 1, chapters: 1, createdAt: -1 });
+  await db.collection("users").createIndex({ email: 1 }, { unique: true });
+  await db.collection("question_paper_templates").createIndex({ userId: 1, createdAt: -1 });
 
   await ensureVectorIndex(db);
 }

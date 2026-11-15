@@ -15,6 +15,7 @@ export interface TokenUsage {
 export class Book {
   constructor(
     public readonly id: string,
+    public readonly userId: string,
     public title: string,
     public readonly board: string,
     public readonly grade: string,

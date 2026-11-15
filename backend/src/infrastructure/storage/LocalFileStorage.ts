@@ -25,4 +25,10 @@ export class LocalFileStorage implements IFileStorage {
   getAbsolutePath(relativeKey: string): string {
     return path.join(this.rootDir, relativeKey);
   }
+
+  async deleteContainingDir(relativeKey: string): Promise<void> {
+    const dir = path.dirname(this.getAbsolutePath(relativeKey));
+    if (dir === this.rootDir) return;
+    await fs.rm(dir, { recursive: true, force: true });
+  }
 }

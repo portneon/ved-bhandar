@@ -28,6 +28,7 @@ export class Generation {
   constructor(
     public readonly id: string,
     public readonly bookId: string,
+    public readonly userId: string,
     public readonly settings: GenerationSettings,
     public slots: Slot[],
     public questions: GeneratedQuestion[],

@@ -21,4 +21,6 @@ export interface GeneratedQuestion {
   explanation: string | null;
   status: GeneratedQuestionStatus;
   reason: string | null;
+  /** Added by hand from the results page, not produced by the generation pipeline — has no source slot to regenerate from. */
+  isManual: boolean;
 }

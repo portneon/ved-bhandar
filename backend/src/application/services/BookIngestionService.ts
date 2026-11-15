@@ -16,6 +16,7 @@ const MIN_PAGE_CHARS = 20;
 const EMBEDDING_BATCH_SIZE = 32;
 
 export interface UploadInput {
+  userId: string;
   title: string;
   board: string;
   grade: string;
@@ -42,6 +43,7 @@ export class BookIngestionService {
 
     const book = new Book(
       bookId,
+      input.userId,
       input.title,
       input.board,
       input.grade,

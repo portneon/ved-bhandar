@@ -13,6 +13,9 @@ export function booksRouter(): Router {
   router.post("/", upload.single("file"), asyncHandler(controller.upload));
   router.get("/", asyncHandler(controller.list));
   router.get("/:id", asyncHandler(controller.get));
+  router.delete("/:id", asyncHandler(controller.delete));
+  router.get("/:id/generations", asyncHandler(controller.listGenerations));
+  router.get("/:id/question-bank", asyncHandler(controller.questionBank));
 
   return router;
 }

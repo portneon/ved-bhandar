@@ -5,6 +5,7 @@ import { PageRange, Slot } from "../../domain/entities/Slot";
 import { IEmbeddingProvider } from "../../domain/interfaces/IEmbeddingProvider";
 import { ChunkFilter, IChunkRepository } from "../../domain/interfaces/repositories/IChunkRepository";
 import { weightedSample } from "./weightedSample";
+import { TopicPlanEntry } from "./TopicPlanningService";
 
 const VECTOR_SCORE_THRESHOLD = 0.55;
 const NO_CANDIDATES_REASON =
@@ -16,6 +17,8 @@ export interface RetrievalOutcome {
   pages: number[];
   status: "ready" | "no_candidates";
   reason?: string;
+  /** One-sentence angle from the teacher-planning stage, if this slot's topic was chosen by the plan rather than sampled. */
+  focus?: string;
 }
 
 interface SlotGroup {
@@ -31,7 +34,12 @@ export class ChunkRetrievalService {
     @inject("IEmbeddingProvider") private readonly embeddingProvider: IEmbeddingProvider,
   ) {}
 
-  async retrieve(bookId: string, topic: string | undefined, slots: Slot[]): Promise<Map<string, RetrievalOutcome>> {
+  async retrieve(
+    bookId: string,
+    topic: string | undefined,
+    slots: Slot[],
+    plan?: Map<string, TopicPlanEntry>,
+  ): Promise<Map<string, RetrievalOutcome>> {
     const outcomes = new Map<string, RetrievalOutcome>();
     const groups = this.groupSlots(slots);
 
@@ -44,7 +52,7 @@ export class ChunkRetrievalService {
     }
 
     for (const group of groups.values()) {
-      await this.resolveGroup(bookId, queryVector, group, outcomes);
+      await this.resolveGroup(bookId, queryVector, group, outcomes, plan);
     }
 
     return outcomes;
@@ -55,16 +63,33 @@ export class ChunkRetrievalService {
     queryVector: number[] | null,
     group: SlotGroup,
     outcomes: Map<string, RetrievalOutcome>,
+    plan: Map<string, TopicPlanEntry> | undefined,
   ): Promise<void> {
+    // Slots the teacher-planning stage already assigned a topic to skip
+    // sampling entirely — only the slots it left uncovered fall through to
+    // the mechanical weighted/random selection below.
+    const unplannedSlots: Slot[] = [];
+    for (const slot of group.slots) {
+      const planEntry = plan?.get(slot.slotId);
+      if (!planEntry) {
+        unplannedSlots.push(slot);
+        continue;
+      }
+      const chunkIds = [planEntry.chunkId, planEntry.secondaryChunkId].filter((id): id is string => Boolean(id));
+      const pages = [planEntry.page, planEntry.secondaryPage].filter((page): page is number => typeof page === "number");
+      outcomes.set(slot.slotId, { slotId: slot.slotId, chunkIds, pages, status: "ready", focus: planEntry.focus });
+    }
+    if (unplannedSlots.length === 0) return;
+
     const types = TYPES_FOR_BLOOM[group.bloom] ?? [];
     const filter: ChunkFilter = {
       bookId,
-      chapters: group.slots[0].chapters,
+      chapters: unplannedSlots[0].chapters,
       pageRange: group.pageRange,
       types,
       minMaxBloom: Math.min(group.bloom, 5),
     };
-    const k = group.slots.length;
+    const k = unplannedSlots.length;
 
     let primaryCandidates: Chunk[];
     if (queryVector) {
@@ -84,14 +109,14 @@ export class ChunkRetrievalService {
     }
 
     if (primaryCandidates.length === 0) {
-      for (const slot of group.slots) {
+      for (const slot of unplannedSlots) {
         outcomes.set(slot.slotId, { slotId: slot.slotId, chunkIds: [], pages: [], status: "no_candidates", reason: NO_CANDIDATES_REASON });
       }
       return;
     }
 
-    for (let i = 0; i < group.slots.length; i++) {
-      const slot = group.slots[i];
+    for (let i = 0; i < unplannedSlots.length; i++) {
+      const slot = unplannedSlots[i];
       const primary = primaryCandidates[i % primaryCandidates.length];
       const chunkIds = [primary.id];
       const pages = [primary.page];

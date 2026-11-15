@@ -68,6 +68,7 @@ export interface GeneratedQuestion {
   explanation: string | null;
   status: GeneratedQuestionStatus;
   reason: string | null;
+  isManual: boolean;
 }
 
 export interface Generation {
@@ -79,6 +80,69 @@ export interface Generation {
   questions: GeneratedQuestion[];
 }
 
+/** A past generation run for a book, without its full question payload. */
+export interface GenerationSummary {
+  id: string;
+  bookId: string;
+  settings: GenerationSettings;
+  tokenUsage: TokenUsage;
+  createdAt: string;
+  totalQuestions: number;
+  acceptedQuestions: number;
+  exportableQuestions: number;
+}
+
+/** A question pooled into the book's chapter-wide question bank — independent of which generation run produced it. */
+export interface QuestionBankEntry {
+  id: string;
+  bookId: string;
+  generationId: string;
+  slotId: string;
+  chapters: number[];
+  pages: number[];
+  questionType: QuestionType;
+  bloom: number;
+  marks: number;
+  difficulty: Difficulty;
+  stem: string;
+  options: string[] | null;
+  answer: string;
+  explanation: string;
+  status: GeneratedQuestionStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  createdAt: string;
+}
+
+export type TemplateKind = "builder" | "docx";
+
+export interface BuilderConfig {
+  schoolName: string;
+  headerText: string;
+  footerText: string;
+  showBloom: boolean;
+  showMarks: boolean;
+}
+
+export interface Template {
+  id: string;
+  name: string;
+  kind: TemplateKind;
+  builderConfig: BuilderConfig | null;
+  createdAt: string;
+}
+
 export function isGenerationSettled(generation: Generation): boolean {
   return generation.questions.every((question) => question.status !== "pending");
+}
+
+/** Mirrors GenerationPdfExporter's inclusion rule: only drafted/accepted questions with a stem are exported. */
+export function willIncludeInPdfExport(question: GeneratedQuestion): boolean {
+  return question.stem !== null && (question.status === "draft" || question.status === "accepted");
 }

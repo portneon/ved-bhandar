@@ -11,6 +11,18 @@ export type ChunkType =
 
 export type Modality = "always" | "usually" | "can";
 
+/** A lightweight projection of a tagged chunk — metadata only, no text/embedding — used to list "topics" for the teacher-planning stage without blowing up prompt size. */
+export interface ChunkCatalogEntry {
+  id: string;
+  chapter: number;
+  sectionTitle: string;
+  page: number;
+  type: ChunkType;
+  maxBloom: number;
+  keyTerms: string[];
+  summary: string;
+}
+
 export class Chunk {
   constructor(
     public readonly id: string,

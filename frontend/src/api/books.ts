@@ -1,5 +1,5 @@
 import { api } from "./client";
-import { Book, ChapterRange } from "../types";
+import { Book, ChapterRange, GenerationSummary, QuestionBankEntry } from "../types";
 
 export function listBooks(): Promise<Book[]> {
   return api.get<Book[]>("/api/books");
@@ -7,6 +7,19 @@ export function listBooks(): Promise<Book[]> {
 
 export function getBook(id: string): Promise<Book> {
   return api.get<Book>(`/api/books/${id}`);
+}
+
+export function deleteBook(id: string): Promise<void> {
+  return api.delete<void>(`/api/books/${id}`);
+}
+
+export function listGenerationsForBook(bookId: string): Promise<GenerationSummary[]> {
+  return api.get<GenerationSummary[]>(`/api/books/${bookId}/generations`);
+}
+
+export function listQuestionBank(bookId: string, chapter?: number): Promise<QuestionBankEntry[]> {
+  const query = chapter !== undefined ? `?chapter=${chapter}` : "";
+  return api.get<QuestionBankEntry[]>(`/api/books/${bookId}/question-bank${query}`);
 }
 
 export interface UploadBookInput {

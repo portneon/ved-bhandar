@@ -18,8 +18,8 @@ interface QuestionGroupProps {
 export function QuestionGroup({ type, questions, startIndex, generationId, onChanged }: QuestionGroupProps): JSX.Element | null {
   if (questions.length === 0) return null;
   return (
-    <section>
-      <h2>{LABELS[type]}</h2>
+    <section className="exam-section">
+      <h2 className="exam-section-title">{LABELS[type]}</h2>
       <div className="question-list">
         {questions.map((question, i) => (
           <QuestionCard

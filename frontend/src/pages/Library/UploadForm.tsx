@@ -66,12 +66,24 @@ export function UploadForm({ onUploaded }: { onUploaded: () => void }): JSX.Elem
           <input value={title} onChange={(e) => setTitle(e.target.value)} autoComplete="off" required />
         </label>
         <label className="field">
-          <span>Board</span>
-          <input value={board} onChange={(e) => setBoard(e.target.value)} placeholder="CBSE" autoComplete="off" required />
+          <span>Board / University</span>
+          <input
+            value={board}
+            onChange={(e) => setBoard(e.target.value)}
+            placeholder="CBSE, Delhi University, IIT Bombay…"
+            autoComplete="off"
+            required
+          />
         </label>
         <label className="field">
-          <span>Class</span>
-          <input value={grade} onChange={(e) => setGrade(e.target.value)} placeholder="10" autoComplete="off" required />
+          <span>Class / Year</span>
+          <input
+            value={grade}
+            onChange={(e) => setGrade(e.target.value)}
+            placeholder="Class 10, 2nd Year B.Sc, Semester 4…"
+            autoComplete="off"
+            required
+          />
         </label>
         <label className="field">
           <span>Subject</span>

@@ -1,7 +1,11 @@
 import { inject, injectable } from "tsyringe";
+import { HttpError } from "../../api/HttpError";
 import { IGenerationExporter } from "../../domain/interfaces/IGenerationExporter";
 import { IBookRepository } from "../../domain/interfaces/repositories/IBookRepository";
 import { IGenerationRepository } from "../../domain/interfaces/repositories/IGenerationRepository";
+import { IQuestionPaperTemplateRepository } from "../../domain/interfaces/repositories/IQuestionPaperTemplateRepository";
+import { TemplatedPdfExporter } from "../../infrastructure/export/TemplatedPdfExporter";
+import { DocxTemplateExporter } from "../../infrastructure/export/DocxTemplateExporter";
 
 export interface ExportResult {
   buffer: Buffer;
@@ -15,12 +19,15 @@ export class GenerationExportService {
     @inject("IGenerationRepository") private readonly generationRepo: IGenerationRepository,
     @inject("IBookRepository") private readonly bookRepo: IBookRepository,
     @inject("IGenerationExporter") private readonly exporter: IGenerationExporter,
+    @inject("IQuestionPaperTemplateRepository") private readonly templateRepo: IQuestionPaperTemplateRepository,
+    @inject(TemplatedPdfExporter) private readonly templatedPdfExporter: TemplatedPdfExporter,
+    @inject(DocxTemplateExporter) private readonly docxTemplateExporter: DocxTemplateExporter,
   ) {}
 
-  async export(generationId: string): Promise<ExportResult | null> {
-    const generation = await this.generationRepo.findById(generationId);
+  async export(generationId: string, userId: string): Promise<ExportResult | null> {
+    const generation = await this.generationRepo.findById(generationId, userId);
     if (!generation) return null;
-    const book = await this.bookRepo.findById(generation.bookId);
+    const book = await this.bookRepo.findById(generation.bookId, userId);
     if (!book) return null;
 
     const buffer = await this.exporter.export(generation, book);
@@ -29,6 +36,23 @@ export class GenerationExportService {
       contentType: this.exporter.contentType,
       filename: `${this.sanitizeFilename(book.title)}.${this.exporter.fileExtension}`,
     };
+  }
+
+  async exportWithTemplate(generationId: string, templateId: string, userId: string): Promise<ExportResult | null> {
+    const generation = await this.generationRepo.findById(generationId, userId);
+    if (!generation) return null;
+    const book = await this.bookRepo.findById(generation.bookId, userId);
+    if (!book) return null;
+    const template = await this.templateRepo.findById(templateId, userId);
+    if (!template) throw HttpError.notFound("Template not found");
+
+    if (template.kind === "docx") {
+      const buffer = await this.docxTemplateExporter.export(generation, book, template);
+      return { buffer, contentType: this.docxTemplateExporter.contentType, filename: `${this.sanitizeFilename(book.title)}.docx` };
+    }
+
+    const buffer = await this.templatedPdfExporter.export(generation, book, template);
+    return { buffer, contentType: this.templatedPdfExporter.contentType, filename: `${this.sanitizeFilename(book.title)}.pdf` };
   }
 
   /**

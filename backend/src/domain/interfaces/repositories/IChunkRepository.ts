@@ -1,4 +1,4 @@
-import { Chunk, ChunkType, Modality } from "../../entities/Chunk";
+import { Chunk, ChunkCatalogEntry, ChunkType, Modality } from "../../entities/Chunk";
 import { PageRange } from "../../entities/Slot";
 
 export interface ChunkTagPatch {
@@ -44,6 +44,9 @@ export interface IChunkRepository {
   insertMany(chunks: Chunk[]): Promise<void>;
   findByBookId(bookId: string): Promise<Chunk[]>;
   findByIds(ids: string[]): Promise<Chunk[]>;
+  deleteByBookId(bookId: string): Promise<void>;
+  /** Tagged chunks for the given chapters, as metadata only (no text/embedding) — the "topic catalog" sent to the teacher-planning LLM stage. */
+  findCatalog(bookId: string, chapters: number[]): Promise<ChunkCatalogEntry[]>;
   applyTag(id: string, tag: ChunkTagPatch): Promise<void>;
   applyEmbedding(id: string, embedding: number[]): Promise<void>;
   sample(filter: ChunkFilter, limit: number): Promise<Chunk[]>;

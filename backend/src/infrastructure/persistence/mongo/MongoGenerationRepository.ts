@@ -9,6 +9,7 @@ import { IGenerationRepository, QuestionPatch } from "../../../domain/interfaces
 interface GenerationDoc {
   _id: string;
   bookId: string;
+  userId: string;
   settings: GenerationSettings;
   slots: Slot[];
   questions: GeneratedQuestion[];
@@ -29,9 +30,14 @@ export class MongoGenerationRepository implements IGenerationRepository {
     return generation;
   }
 
-  async findById(id: string): Promise<Generation | null> {
-    const doc = await this.collection.findOne({ _id: id });
+  async findById(id: string, userId: string): Promise<Generation | null> {
+    const doc = await this.collection.findOne({ _id: id, userId });
     return doc ? this.toDomain(doc) : null;
+  }
+
+  async findByBookId(bookId: string, userId: string): Promise<Generation[]> {
+    const docs = await this.collection.find({ bookId, userId }).sort({ createdAt: -1 }).toArray();
+    return docs.map((doc) => this.toDomain(doc));
   }
 
   async upsertQuestion(generationId: string, question: GeneratedQuestion): Promise<void> {
@@ -39,6 +45,10 @@ export class MongoGenerationRepository implements IGenerationRepository {
       { _id: generationId, "questions.slotId": question.slotId },
       { $set: { "questions.$": question } },
     );
+  }
+
+  async addManualQuestion(generationId: string, question: GeneratedQuestion): Promise<void> {
+    await this.collection.updateOne({ _id: generationId }, { $push: { questions: question } });
   }
 
   async updateQuestion(generationId: string, slotId: string, patch: QuestionPatch): Promise<void> {
@@ -59,10 +69,15 @@ export class MongoGenerationRepository implements IGenerationRepository {
     );
   }
 
+  async deleteByBookId(bookId: string): Promise<void> {
+    await this.collection.deleteMany({ bookId });
+  }
+
   private toDoc(generation: Generation): GenerationDoc {
     return {
       _id: generation.id,
       bookId: generation.bookId,
+      userId: generation.userId,
       settings: generation.settings,
       slots: generation.slots,
       questions: generation.questions,
@@ -72,6 +87,6 @@ export class MongoGenerationRepository implements IGenerationRepository {
   }
 
   private toDomain(doc: GenerationDoc): Generation {
-    return new Generation(doc._id, doc.bookId, doc.settings, doc.slots, doc.questions, doc.tokenUsage, doc.createdAt);
+    return new Generation(doc._id, doc.bookId, doc.userId, doc.settings, doc.slots, doc.questions, doc.tokenUsage, doc.createdAt);
   }
 }

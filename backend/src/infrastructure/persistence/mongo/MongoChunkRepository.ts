@@ -1,6 +1,6 @@
 import { inject, injectable } from "tsyringe";
 import { Collection, Db, Document as MongoDocument } from "mongodb";
-import { Chunk, ChunkType, Modality } from "../../../domain/entities/Chunk";
+import { Chunk, ChunkCatalogEntry, ChunkType, Modality } from "../../../domain/entities/Chunk";
 import {
   ChunkFilter,
   ChunkTagPatch,
@@ -68,6 +68,32 @@ export class MongoChunkRepository implements IChunkRepository {
     if (ids.length === 0) return [];
     const docs = await this.collection.find({ _id: { $in: ids } }).toArray();
     return docs.map((doc) => this.toDomain(doc));
+  }
+
+  async deleteByBookId(bookId: string): Promise<void> {
+    await this.collection.deleteMany({ bookId });
+  }
+
+  async findCatalog(bookId: string, chapters: number[]): Promise<ChunkCatalogEntry[]> {
+    const filter = chapters.length > 0 ? { bookId, chapter: { $in: chapters } } : { bookId };
+    const docs = await this.collection
+      .find(filter, {
+        projection: { _id: 1, chapter: 1, sectionTitle: 1, page: 1, type: 1, maxBloom: 1, keyTerms: 1, summary: 1 },
+      })
+      .sort({ chapter: 1, order: 1 })
+      .toArray();
+    return docs
+      .filter((doc) => doc.type !== "other" && doc.summary)
+      .map((doc) => ({
+        id: doc._id,
+        chapter: doc.chapter,
+        sectionTitle: doc.sectionTitle,
+        page: doc.page,
+        type: doc.type,
+        maxBloom: doc.maxBloom,
+        keyTerms: doc.keyTerms,
+        summary: doc.summary,
+      }));
   }
 
   async applyTag(id: string, tag: ChunkTagPatch): Promise<void> {

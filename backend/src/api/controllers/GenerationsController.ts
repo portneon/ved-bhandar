@@ -29,6 +29,14 @@ const questionPatchSchema = z.object({
   explanation: z.string().optional(),
   status: z.enum(["accepted", "rejected", "draft"]).optional(),
 });
+const manualQuestionSchema = z.object({
+  questionType: z.enum(["mcq", "short_answer", "long_answer"]),
+  bloom: z.number().int().min(1).max(6).default(1),
+  marks: z.number().min(0),
+});
+const refineSchema = z.object({
+  instruction: z.string().trim().min(1).max(500),
+});
 
 @injectable()
 export class GenerationsController {
@@ -44,12 +52,12 @@ export class GenerationsController {
       res.status(400).json({ error: parsed.error.message });
       return;
     }
-    const generation = await this.generationService.start(parsed.data);
+    const generation = await this.generationService.start(parsed.data, req.user!.id);
     res.status(202).json({ generationId: generation.id });
   };
 
   get = async (req: Request, res: Response): Promise<void> => {
-    const generation = await this.editingService.getGeneration(req.params.id);
+    const generation = await this.editingService.getGeneration(req.params.id, req.user!.id);
     if (!generation) {
       res.status(404).json({ error: "Generation not found" });
       return;
@@ -58,8 +66,32 @@ export class GenerationsController {
   };
 
   regenerate = async (req: Request, res: Response): Promise<void> => {
-    await this.generationService.regenerateSlot(req.params.genId, req.params.slotId);
+    await this.generationService.regenerateSlot(req.params.genId, req.params.slotId, req.user!.id);
     res.status(204).end();
+  };
+
+  refineQuestion = async (req: Request, res: Response): Promise<void> => {
+    const parsed = refineSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({ error: parsed.error.message });
+      return;
+    }
+    const result = await this.generationService.refineQuestion(req.params.genId, req.params.slotId, parsed.data.instruction, req.user!.id);
+    if (result.status === "failed") {
+      res.status(422).json({ error: result.reason });
+      return;
+    }
+    res.json(this.questionToDto(result.question));
+  };
+
+  addManualQuestion = async (req: Request, res: Response): Promise<void> => {
+    const parsed = manualQuestionSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({ error: parsed.error.message });
+      return;
+    }
+    const question = await this.editingService.addManualQuestion(req.params.genId, parsed.data, req.user!.id);
+    res.status(201).json(this.questionToDto(question));
   };
 
   updateQuestion = async (req: Request, res: Response): Promise<void> => {
@@ -68,12 +100,15 @@ export class GenerationsController {
       res.status(400).json({ error: parsed.error.message });
       return;
     }
-    await this.editingService.updateQuestion(req.params.genId, req.params.slotId, parsed.data);
+    await this.editingService.updateQuestion(req.params.genId, req.params.slotId, parsed.data, req.user!.id);
     res.status(204).end();
   };
 
   download = async (req: Request, res: Response): Promise<void> => {
-    const result = await this.exportService.export(req.params.id);
+    const templateId = typeof req.query.templateId === "string" ? req.query.templateId : undefined;
+    const result = templateId
+      ? await this.exportService.exportWithTemplate(req.params.id, templateId, req.user!.id)
+      : await this.exportService.export(req.params.id, req.user!.id);
     if (!result) {
       res.status(404).json({ error: "Generation not found" });
       return;
@@ -109,6 +144,7 @@ export class GenerationsController {
       explanation: question.explanation,
       status: question.status,
       reason: question.reason,
+      isManual: question.isManual,
     };
   }
 }

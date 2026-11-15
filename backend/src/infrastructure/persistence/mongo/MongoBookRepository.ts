@@ -5,6 +5,7 @@ import { BookPatch, IBookRepository } from "../../../domain/interfaces/repositor
 
 interface BookDoc {
   _id: string;
+  userId: string;
   title: string;
   board: string;
   grade: string;
@@ -33,13 +34,13 @@ export class MongoBookRepository implements IBookRepository {
     return book;
   }
 
-  async findById(id: string): Promise<Book | null> {
-    const doc = await this.collection.findOne({ _id: id });
+  async findById(id: string, userId: string): Promise<Book | null> {
+    const doc = await this.collection.findOne({ _id: id, userId });
     return doc ? this.toDomain(doc) : null;
   }
 
-  async findAll(): Promise<Book[]> {
-    const docs = await this.collection.find().sort({ createdAt: -1 }).toArray();
+  async findAll(userId: string): Promise<Book[]> {
+    const docs = await this.collection.find({ userId }).sort({ createdAt: -1 }).toArray();
     return docs.map((doc) => this.toDomain(doc));
   }
 
@@ -54,9 +55,14 @@ export class MongoBookRepository implements IBookRepository {
     );
   }
 
+  async delete(id: string): Promise<void> {
+    await this.collection.deleteOne({ _id: id });
+  }
+
   private toDoc(book: Book): BookDoc {
     return {
       _id: book.id,
+      userId: book.userId,
       title: book.title,
       board: book.board,
       grade: book.grade,
@@ -76,6 +82,7 @@ export class MongoBookRepository implements IBookRepository {
   private toDomain(doc: BookDoc): Book {
     return new Book(
       doc._id,
+      doc.userId,
       doc.title,
       doc.board,
       doc.grade,

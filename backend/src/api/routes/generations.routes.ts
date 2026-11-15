@@ -11,6 +11,8 @@ export function generationsRouter(): Router {
   router.get("/generations/:id", asyncHandler(controller.get));
   router.get("/generations/:id/export", asyncHandler(controller.download));
   router.post("/questions/:genId/:slotId/regenerate", asyncHandler(controller.regenerate));
+  router.post("/questions/:genId/:slotId/refine", asyncHandler(controller.refineQuestion));
+  router.post("/questions/:genId/manual", asyncHandler(controller.addManualQuestion));
   router.patch("/questions/:genId/:slotId", asyncHandler(controller.updateQuestion));
 
   return router;

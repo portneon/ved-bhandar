@@ -436,3 +436,21 @@ button.icon-button:hover:not(:disabled) {
   flex-direction: column;
   gap: var(--space-1);
 }
+
+.question-bank-summary {
+  display: flex;
+  gap: var(--space-3);
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  flex-wrap: wrap;
+  align-items: center;
+  cursor: pointer;
+}
+
+details.question-card[open] .question-bank-summary {
+  margin-bottom: var(--space-2);
+}
+
+details.question-card .question-stem {
+  margin-top: var(--space-2);
+}
