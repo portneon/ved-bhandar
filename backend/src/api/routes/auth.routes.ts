@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { container } from "tsyringe";
-import { AuthController } from "../controllers/AuthController";
-import { asyncHandler } from "../asyncHandler";
-import { requireAuth } from "../middleware/requireAuth";
+import { AuthController } from "../controllers/AuthController.js";
+import { asyncHandler } from "../asyncHandler.js";
+import { requireAuth } from "../middleware/requireAuth.js";
 
 export function authRouter(): Router {
   const router = Router();

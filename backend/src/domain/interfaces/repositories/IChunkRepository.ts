@@ -1,5 +1,5 @@
-import { Chunk, ChunkCatalogEntry, ChunkType, Modality } from "../../entities/Chunk";
-import { PageRange } from "../../entities/Slot";
+import { Chunk, ChunkCatalogEntry, ChunkType, Modality } from "../../entities/Chunk.js";
+import { PageRange } from "../../entities/Slot.js";
 
 export interface ChunkTagPatch {
   type: ChunkType;

@@ -1,9 +1,9 @@
 import { inject, injectable } from "tsyringe";
 import { z } from "zod";
-import { QuestionType } from "../../domain/entities/Slot";
-import { ILlmProvider } from "../../domain/interfaces/ILlmProvider";
-import { IGenerationRepository } from "../../domain/interfaces/repositories/IGenerationRepository";
-import { extractJson } from "../shared/extractJson";
+import { QuestionType } from "../../domain/entities/Slot.js";
+import { ILlmProvider } from "../../domain/interfaces/ILlmProvider.js";
+import { IGenerationRepository } from "../../domain/interfaces/repositories/IGenerationRepository.js";
+import { extractJson } from "../shared/extractJson.js";
 
 export interface QuestionToEvaluate {
   questionType: QuestionType;

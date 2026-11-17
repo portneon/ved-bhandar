@@ -1,4 +1,4 @@
-import { SectionDraft } from "./SectionDetector";
+import { SectionDraft } from "./SectionDetector.js";
 
 export interface ChunkDraft {
   bookId: string;

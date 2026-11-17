@@ -1,8 +1,8 @@
 import { injectable, inject } from "tsyringe";
 import { Request, Response } from "express";
 import { z } from "zod";
-import { AuthService } from "../../application/services/AuthService";
-import { HttpError } from "../HttpError";
+import { AuthService } from "../../application/services/AuthService.js";
+import { HttpError } from "../HttpError.js";
 
 const registerSchema = z.object({
   name: z.string().trim().min(1).max(120),

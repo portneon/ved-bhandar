@@ -1,8 +1,8 @@
 import { injectable } from "tsyringe";
-import { Book } from "../../domain/entities/Book";
-import { Generation } from "../../domain/entities/Generation";
-import { Template } from "../../domain/entities/Template";
-import { PDF_BASE_STYLES, escapeHtml, exportableQuestions, renderHtmlToPdf, renderQuestionsAndAnswerKey } from "./pdfQuestionHtml";
+import { Book } from "../../domain/entities/Book.js";
+import { Generation } from "../../domain/entities/Generation.js";
+import { Template } from "../../domain/entities/Template.js";
+import { PDF_BASE_STYLES, escapeHtml, exportableQuestions, renderHtmlToPdf, renderQuestionsAndAnswerKey } from "./pdfQuestionHtml.js";
 
 /** Renders a generation into a user-built template's branding (school name, header/footer text, Bloom/marks toggles). */
 @injectable()

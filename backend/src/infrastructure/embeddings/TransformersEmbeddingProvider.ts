@@ -1,6 +1,12 @@
 import { injectable } from "tsyringe";
-import { pipeline } from "@huggingface/transformers";
-import { IEmbeddingProvider } from "../../domain/interfaces/IEmbeddingProvider";
+import { env, pipeline } from "@huggingface/transformers";
+import { IEmbeddingProvider } from "../../domain/interfaces/IEmbeddingProvider.js";
+
+// Vercel's filesystem is read-only except /tmp; point the model cache there
+// so it doesn't try (and fail) to write to the default ~/.cache location.
+if (process.env.VERCEL) {
+  env.cacheDir = "/tmp/transformers-cache";
+}
 
 const BATCH_SIZE = 32;
 

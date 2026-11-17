@@ -1,13 +1,13 @@
 import { inject, injectable } from "tsyringe";
 import { z } from "zod";
-import { ChunkCatalogEntry } from "../../domain/entities/Chunk";
-import { Difficulty, Slot } from "../../domain/entities/Slot";
-import { ILlmProvider } from "../../domain/interfaces/ILlmProvider";
-import { ITopicPlanningPromptBuilder } from "../../domain/interfaces/ITopicPlanningPromptBuilder";
-import { IChunkRepository } from "../../domain/interfaces/repositories/IChunkRepository";
-import { IGenerationRepository } from "../../domain/interfaces/repositories/IGenerationRepository";
-import { TYPES_FOR_BLOOM } from "../../domain/constants/typesForBloom";
-import { extractJson } from "../shared/extractJson";
+import { ChunkCatalogEntry } from "../../domain/entities/Chunk.js";
+import { Difficulty, Slot } from "../../domain/entities/Slot.js";
+import { ILlmProvider } from "../../domain/interfaces/ILlmProvider.js";
+import { ITopicPlanningPromptBuilder } from "../../domain/interfaces/ITopicPlanningPromptBuilder.js";
+import { IChunkRepository } from "../../domain/interfaces/repositories/IChunkRepository.js";
+import { IGenerationRepository } from "../../domain/interfaces/repositories/IGenerationRepository.js";
+import { TYPES_FOR_BLOOM } from "../../domain/constants/typesForBloom.js";
+import { extractJson } from "../shared/extractJson.js";
 
 export interface TopicPlanEntry {
   chunkId: string;

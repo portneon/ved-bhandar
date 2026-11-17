@@ -2,9 +2,9 @@ import { randomUUID } from "crypto";
 import { inject, injectable } from "tsyringe";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { HttpError } from "../../api/HttpError";
-import { User } from "../../domain/entities/User";
-import { IUserRepository } from "../../domain/interfaces/repositories/IUserRepository";
+import { HttpError } from "../../api/HttpError.js";
+import { User } from "../../domain/entities/User.js";
+import { IUserRepository } from "../../domain/interfaces/repositories/IUserRepository.js";
 
 const TOKEN_TTL = "7d";
 const BCRYPT_ROUNDS = 10;

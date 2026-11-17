@@ -1,9 +1,9 @@
 import { injectable, inject } from "tsyringe";
 import { Request, Response } from "express";
 import { z } from "zod";
-import { Template } from "../../domain/entities/Template";
-import { TemplateService } from "../../application/services/TemplateService";
-import { HttpError } from "../HttpError";
+import { Template } from "../../domain/entities/Template.js";
+import { TemplateService } from "../../application/services/TemplateService.js";
+import { HttpError } from "../HttpError.js";
 
 const builderConfigSchema = z.object({
   schoolName: z.string().trim().max(200).default(""),

@@ -1,12 +1,12 @@
 import { inject, injectable } from "tsyringe";
 import { z } from "zod";
-import { Chunk } from "../../domain/entities/Chunk";
-import { TokenUsage } from "../../domain/entities/Book";
-import { clampMaxBloom } from "../../domain/constants/bloomCeilings";
-import { ILlmProvider } from "../../domain/interfaces/ILlmProvider";
-import { ITaggingPromptBuilder } from "../../domain/interfaces/ITaggingPromptBuilder";
-import { ChunkTagPatch, IChunkRepository } from "../../domain/interfaces/repositories/IChunkRepository";
-import { extractJson } from "../shared/extractJson";
+import { Chunk } from "../../domain/entities/Chunk.js";
+import { TokenUsage } from "../../domain/entities/Book.js";
+import { clampMaxBloom } from "../../domain/constants/bloomCeilings.js";
+import { ILlmProvider } from "../../domain/interfaces/ILlmProvider.js";
+import { ITaggingPromptBuilder } from "../../domain/interfaces/ITaggingPromptBuilder.js";
+import { ChunkTagPatch, IChunkRepository } from "../../domain/interfaces/repositories/IChunkRepository.js";
+import { extractJson } from "../shared/extractJson.js";
 
 const chunkTypeEnum = z.enum([
   "definition",

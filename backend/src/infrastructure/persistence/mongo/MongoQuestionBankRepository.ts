@@ -1,7 +1,7 @@
 import { inject, injectable } from "tsyringe";
 import { Collection, Db } from "mongodb";
-import { QuestionBankEntry } from "../../../domain/entities/QuestionBankEntry";
-import { IQuestionBankRepository, QuestionBankPatch } from "../../../domain/interfaces/repositories/IQuestionBankRepository";
+import { QuestionBankEntry } from "../../../domain/entities/QuestionBankEntry.js";
+import { IQuestionBankRepository, QuestionBankPatch } from "../../../domain/interfaces/repositories/IQuestionBankRepository.js";
 
 interface QuestionBankDoc extends Omit<QuestionBankEntry, "id"> {
   _id: string;

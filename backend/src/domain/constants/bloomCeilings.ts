@@ -1,4 +1,4 @@
-import { ChunkType } from "../entities/Chunk";
+import { ChunkType } from "../entities/Chunk.js";
 
 /**
  * Hard ceiling on maxBloom per chunk type (spec 4.4). The tagging model's

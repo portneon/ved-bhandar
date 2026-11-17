@@ -1,5 +1,5 @@
-import { BuiltPrompt } from "./BuiltPrompt";
-import { Difficulty, QuestionType } from "../entities/Slot";
+import { BuiltPrompt } from "./BuiltPrompt.js";
+import { Difficulty, QuestionType } from "../entities/Slot.js";
 
 export interface ChunkForGeneration {
   id: string;

@@ -1,7 +1,7 @@
 import { inject, injectable } from "tsyringe";
 import { Collection, Db } from "mongodb";
-import { BuilderConfig, Template, TemplateKind } from "../../../domain/entities/Template";
-import { IQuestionPaperTemplateRepository } from "../../../domain/interfaces/repositories/IQuestionPaperTemplateRepository";
+import { BuilderConfig, Template, TemplateKind } from "../../../domain/entities/Template.js";
+import { IQuestionPaperTemplateRepository } from "../../../domain/interfaces/repositories/IQuestionPaperTemplateRepository.js";
 
 interface TemplateDoc {
   _id: string;

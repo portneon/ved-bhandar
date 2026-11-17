@@ -1,10 +1,10 @@
 import { inject, injectable } from "tsyringe";
 import { Collection, Db } from "mongodb";
-import { TokenUsage } from "../../../domain/entities/Book";
-import { Generation, GenerationSettings } from "../../../domain/entities/Generation";
-import { GeneratedQuestion } from "../../../domain/entities/GeneratedQuestion";
-import { Slot } from "../../../domain/entities/Slot";
-import { IGenerationRepository, QuestionPatch } from "../../../domain/interfaces/repositories/IGenerationRepository";
+import { TokenUsage } from "../../../domain/entities/Book.js";
+import { Generation, GenerationSettings } from "../../../domain/entities/Generation.js";
+import { GeneratedQuestion } from "../../../domain/entities/GeneratedQuestion.js";
+import { Slot } from "../../../domain/entities/Slot.js";
+import { IGenerationRepository, QuestionPatch } from "../../../domain/interfaces/repositories/IGenerationRepository.js";
 
 interface GenerationDoc {
   _id: string;

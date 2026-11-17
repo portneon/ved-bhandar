@@ -1,13 +1,13 @@
 import { injectable, inject } from "tsyringe";
 import { Request, Response } from "express";
 import { z } from "zod";
-import { Book } from "../../domain/entities/Book";
-import { Generation } from "../../domain/entities/Generation";
-import { QuestionBankEntry } from "../../domain/entities/QuestionBankEntry";
-import { BookIngestionService } from "../../application/services/BookIngestionService";
-import { BookQueryService } from "../../application/services/BookQueryService";
-import { BookDeletionService } from "../../application/services/BookDeletionService";
-import { GenerationService } from "../../application/services/GenerationService";
+import { Book } from "../../domain/entities/Book.js";
+import { Generation } from "../../domain/entities/Generation.js";
+import { QuestionBankEntry } from "../../domain/entities/QuestionBankEntry.js";
+import { BookIngestionService } from "../../application/services/BookIngestionService.js";
+import { BookQueryService } from "../../application/services/BookQueryService.js";
+import { BookDeletionService } from "../../application/services/BookDeletionService.js";
+import { GenerationService } from "../../application/services/GenerationService.js";
 
 const chapterHintSchema = z.object({
   no: z.number().int(),

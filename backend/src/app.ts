@@ -1,18 +1,16 @@
 import express, { Express, NextFunction, Request, Response } from "express";
 import cors from "cors";
-import path from "path";
-import { booksRouter } from "./api/routes/books.routes";
-import { generationsRouter } from "./api/routes/generations.routes";
-import { authRouter } from "./api/routes/auth.routes";
-import { templatesRouter } from "./api/routes/templates.routes";
-import { requireAuth } from "./api/middleware/requireAuth";
-import { HttpError } from "./api/HttpError";
+import { booksRouter } from "./api/routes/books.routes.js";
+import { generationsRouter } from "./api/routes/generations.routes.js";
+import { authRouter } from "./api/routes/auth.routes.js";
+import { templatesRouter } from "./api/routes/templates.routes.js";
+import { requireAuth } from "./api/middleware/requireAuth.js";
+import { HttpError } from "./api/HttpError.js";
 
 export function createApp(): Express {
   const app = express();
   app.use(cors({ origin: process.env.CORS_ORIGIN ?? "*" }));
   app.use(express.json());
-  app.use("/files", express.static(path.resolve(process.cwd(), process.env.UPLOAD_DIR ?? "uploads")));
   app.use("/api/auth", authRouter());
   app.use("/api/books", requireAuth, booksRouter());
   app.use("/api/templates", requireAuth, templatesRouter());

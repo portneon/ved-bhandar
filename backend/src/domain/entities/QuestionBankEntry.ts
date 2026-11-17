@@ -1,5 +1,5 @@
-import { Difficulty, QuestionType } from "./Slot";
-import { GeneratedQuestionStatus } from "./GeneratedQuestion";
+import { Difficulty, QuestionType } from "./Slot.js";
+import { GeneratedQuestionStatus } from "./GeneratedQuestion.js";
 
 /**
  * A denormalized, cross-generation record of one generated question, pooled

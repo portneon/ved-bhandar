@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
-import { GenerationSettings } from "../../domain/entities/Generation";
-import { Slot } from "../../domain/entities/Slot";
+import { GenerationSettings } from "../../domain/entities/Generation.js";
+import { Slot } from "../../domain/entities/Slot.js";
 
 export function buildSlots(settings: GenerationSettings): Slot[] {
   const slots: Slot[] = settings.items.flatMap((item) =>

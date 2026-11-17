@@ -1,8 +1,8 @@
 import { injectable } from "tsyringe";
-import { Book } from "../../domain/entities/Book";
-import { Generation } from "../../domain/entities/Generation";
-import { IGenerationExporter } from "../../domain/interfaces/IGenerationExporter";
-import { PDF_BASE_STYLES, escapeHtml, exportableQuestions, renderHtmlToPdf, renderQuestionsAndAnswerKey } from "./pdfQuestionHtml";
+import { Book } from "../../domain/entities/Book.js";
+import { Generation } from "../../domain/entities/Generation.js";
+import { IGenerationExporter } from "../../domain/interfaces/IGenerationExporter.js";
+import { PDF_BASE_STYLES, escapeHtml, exportableQuestions, renderHtmlToPdf, renderQuestionsAndAnswerKey } from "./pdfQuestionHtml.js";
 
 @injectable()
 export class GenerationPdfExporter implements IGenerationExporter {

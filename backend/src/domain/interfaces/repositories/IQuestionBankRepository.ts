@@ -1,4 +1,4 @@
-import { QuestionBankEntry } from "../../entities/QuestionBankEntry";
+import { QuestionBankEntry } from "../../entities/QuestionBankEntry.js";
 
 export interface QuestionBankPatch {
   stem?: string;

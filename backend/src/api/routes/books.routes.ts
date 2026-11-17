@@ -1,8 +1,8 @@
 import { Router } from "express";
 import multer from "multer";
 import { container } from "tsyringe";
-import { BooksController } from "../controllers/BooksController";
-import { asyncHandler } from "../asyncHandler";
+import { BooksController } from "../controllers/BooksController.js";
+import { asyncHandler } from "../asyncHandler.js";
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 200 * 1024 * 1024 } });
 

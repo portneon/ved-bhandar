@@ -1,4 +1,4 @@
-import { ChunkType } from "../entities/Chunk";
+import { ChunkType } from "../entities/Chunk.js";
 
 /**
  * Which chunk types can support a question at each Bloom level (spec 6.1).

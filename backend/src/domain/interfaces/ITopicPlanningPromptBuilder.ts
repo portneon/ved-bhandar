@@ -1,6 +1,6 @@
-import { BuiltPrompt } from "./BuiltPrompt";
-import { ChunkCatalogEntry } from "../entities/Chunk";
-import { Difficulty, PageRange, QuestionType } from "../entities/Slot";
+import { BuiltPrompt } from "./BuiltPrompt.js";
+import { ChunkCatalogEntry } from "../entities/Chunk.js";
+import { Difficulty, PageRange, QuestionType } from "../entities/Slot.js";
 
 export interface SlotForPlanning {
   slotId: string;

@@ -1,6 +1,6 @@
 import { injectable } from "tsyringe";
-import { BuiltPrompt } from "../../domain/interfaces/BuiltPrompt";
-import { ITaggingPromptBuilder, TaggingPromptInput } from "../../domain/interfaces/ITaggingPromptBuilder";
+import { BuiltPrompt } from "../../domain/interfaces/BuiltPrompt.js";
+import { ITaggingPromptBuilder, TaggingPromptInput } from "../../domain/interfaces/ITaggingPromptBuilder.js";
 
 const SYSTEM_PROMPT = `You label textbook chunks for a question generator.
 For each chunk return:

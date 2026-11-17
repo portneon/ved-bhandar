@@ -1,4 +1,4 @@
-import { PdfLine } from "../../domain/interfaces/IPdfProcessor";
+import { PdfLine } from "../../domain/interfaces/IPdfProcessor.js";
 
 const CANDIDATE_EDGE_LINES = 2;
 const REPEAT_THRESHOLD = 0.5;

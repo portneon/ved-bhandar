@@ -1,4 +1,4 @@
-import { Book, BookStatus, ChapterRange, TokenUsage } from "../../entities/Book";
+import { Book, BookStatus, ChapterRange, TokenUsage } from "../../entities/Book.js";
 
 export interface BookPatch {
   status?: BookStatus;

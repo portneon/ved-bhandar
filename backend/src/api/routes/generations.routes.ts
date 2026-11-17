@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { container } from "tsyringe";
-import { GenerationsController } from "../controllers/GenerationsController";
-import { asyncHandler } from "../asyncHandler";
+import { GenerationsController } from "../controllers/GenerationsController.js";
+import { asyncHandler } from "../asyncHandler.js";
 
 export function generationsRouter(): Router {
   const router = Router();

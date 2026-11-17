@@ -1,11 +1,11 @@
 import { randomUUID } from "crypto";
 import { inject, injectable } from "tsyringe";
-import { HttpError } from "../../api/HttpError";
-import { Generation } from "../../domain/entities/Generation";
-import { GeneratedQuestion } from "../../domain/entities/GeneratedQuestion";
-import { QuestionType } from "../../domain/entities/Slot";
-import { IGenerationRepository, QuestionPatch } from "../../domain/interfaces/repositories/IGenerationRepository";
-import { IQuestionBankRepository } from "../../domain/interfaces/repositories/IQuestionBankRepository";
+import { HttpError } from "../../api/HttpError.js";
+import { Generation } from "../../domain/entities/Generation.js";
+import { GeneratedQuestion } from "../../domain/entities/GeneratedQuestion.js";
+import { QuestionType } from "../../domain/entities/Slot.js";
+import { IGenerationRepository, QuestionPatch } from "../../domain/interfaces/repositories/IGenerationRepository.js";
+import { IQuestionBankRepository } from "../../domain/interfaces/repositories/IQuestionBankRepository.js";
 
 export interface ManualQuestionInput {
   questionType: QuestionType;

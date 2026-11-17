@@ -1,10 +1,10 @@
 import "reflect-metadata";
-import "./loadEnv";
+import "./loadEnv.js";
 
-import { registerContainer } from "./container";
-import { createApp } from "./app";
-import { connectMongo } from "./infrastructure/persistence/mongo/connection";
-import { ensureIndexes } from "./infrastructure/persistence/mongo/ensureIndexes";
+import { registerContainer } from "./container.js";
+import { createApp } from "./app.js";
+import { connectMongo } from "./infrastructure/persistence/mongo/connection.js";
+import { ensureIndexes } from "./infrastructure/persistence/mongo/ensureIndexes.js";
 
 // Last-resort net: log instead of letting a stray rejection/throw outside Express's
 // request lifecycle (e.g. in a fire-and-forget background task) kill the process.

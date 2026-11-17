@@ -1,4 +1,4 @@
-import { Difficulty, QuestionType } from "./Slot";
+import { Difficulty, QuestionType } from "./Slot.js";
 
 /**
  * "pending"/"no_candidates"/"failed" are pipeline states the spec's

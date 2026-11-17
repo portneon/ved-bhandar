@@ -1,6 +1,6 @@
-import { Generation } from "../../entities/Generation";
-import { GeneratedQuestion } from "../../entities/GeneratedQuestion";
-import { TokenUsage } from "../../entities/Book";
+import { Generation } from "../../entities/Generation.js";
+import { GeneratedQuestion } from "../../entities/GeneratedQuestion.js";
+import { TokenUsage } from "../../entities/Book.js";
 
 export interface QuestionPatch {
   stem?: string;

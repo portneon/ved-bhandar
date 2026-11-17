@@ -3,9 +3,9 @@ import os from "os";
 import path from "path";
 import { randomUUID } from "crypto";
 import { createRequire } from "module";
-import puppeteer from "puppeteer";
-import { GeneratedQuestion } from "../../domain/entities/GeneratedQuestion";
-import { renderMathHtml } from "../rendering/MathHtmlRenderer";
+import puppeteerCore, { type Browser } from "puppeteer-core";
+import { GeneratedQuestion } from "../../domain/entities/GeneratedQuestion.js";
+import { renderMathHtml } from "../rendering/MathHtmlRenderer.js";
 
 export const QUESTION_TYPE_LABELS: Record<string, string> = {
   mcq: "Multiple Choice",
@@ -104,6 +104,23 @@ export const PDF_BASE_STYLES = `
   .katex { font-size: 1em; }
 `;
 
+// On Vercel there's no bundled Chromium, so we launch the serverless-packaged
+// one from @sparticuz/chromium via puppeteer-core. Locally, the devDependency
+// `puppeteer` ships its own Chromium, so we load that instead (dynamic import
+// keeps it out of the production bundle).
+async function launchBrowser(): Promise<Browser> {
+  if (process.env.VERCEL) {
+    const chromium = (await import("@sparticuz/chromium")).default;
+    return puppeteerCore.launch({
+      args: chromium.args,
+      executablePath: await chromium.executablePath(),
+      headless: true,
+    });
+  }
+  const puppeteer = (await import("puppeteer")).default;
+  return puppeteer.launch({ headless: true }) as unknown as Promise<Browser>;
+}
+
 /** Renders a full HTML document (with KaTeX available at `katex.min.css`) to a PDF buffer via headless Chrome. */
 export async function renderHtmlToPdf(html: string): Promise<Buffer> {
   const scratchDir = await fs.mkdtemp(path.join(os.tmpdir(), "generation-pdf-"));
@@ -112,7 +129,7 @@ export async function renderHtmlToPdf(html: string): Promise<Buffer> {
     const htmlPath = path.join(scratchDir, `${randomUUID()}.html`);
     await fs.writeFile(htmlPath, html, "utf8");
 
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await launchBrowser();
     try {
       const page = await browser.newPage();
       await page.goto(`file://${htmlPath}`, { waitUntil: "networkidle0" });

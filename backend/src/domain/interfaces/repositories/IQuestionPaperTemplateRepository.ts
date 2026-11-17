@@ -1,4 +1,4 @@
-import { Template } from "../../entities/Template";
+import { Template } from "../../entities/Template.js";
 
 export interface IQuestionPaperTemplateRepository {
   create(template: Template): Promise<Template>;

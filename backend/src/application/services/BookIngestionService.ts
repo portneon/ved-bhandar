@@ -1,16 +1,16 @@
 import { inject, injectable } from "tsyringe";
 import { randomUUID } from "crypto";
-import { Book, ChapterRange } from "../../domain/entities/Book";
-import { Chunk } from "../../domain/entities/Chunk";
-import { IFileStorage } from "../../domain/interfaces/IFileStorage";
-import { IPdfProcessor, PdfLine } from "../../domain/interfaces/IPdfProcessor";
-import { IEmbeddingProvider } from "../../domain/interfaces/IEmbeddingProvider";
-import { IBookRepository } from "../../domain/interfaces/repositories/IBookRepository";
-import { IChunkRepository } from "../../domain/interfaces/repositories/IChunkRepository";
-import { stripHeadersFooters } from "../ingestion/HeaderFooterStripper";
-import { detectSections } from "../ingestion/SectionDetector";
-import { buildChunks } from "../ingestion/Chunker";
-import { ChunkTaggingService } from "./ChunkTaggingService";
+import { Book, ChapterRange } from "../../domain/entities/Book.js";
+import { Chunk } from "../../domain/entities/Chunk.js";
+import { IFileStorage } from "../../domain/interfaces/IFileStorage.js";
+import { IPdfProcessor, PdfLine } from "../../domain/interfaces/IPdfProcessor.js";
+import { IEmbeddingProvider } from "../../domain/interfaces/IEmbeddingProvider.js";
+import { IBookRepository } from "../../domain/interfaces/repositories/IBookRepository.js";
+import { IChunkRepository } from "../../domain/interfaces/repositories/IChunkRepository.js";
+import { stripHeadersFooters } from "../ingestion/HeaderFooterStripper.js";
+import { detectSections } from "../ingestion/SectionDetector.js";
+import { buildChunks } from "../ingestion/Chunker.js";
+import { ChunkTaggingService } from "./ChunkTaggingService.js";
 
 const MIN_PAGE_CHARS = 20;
 const EMBEDDING_BATCH_SIZE = 32;

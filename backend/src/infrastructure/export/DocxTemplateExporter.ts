@@ -1,11 +1,11 @@
 import { inject, injectable } from "tsyringe";
 import PizZip from "pizzip";
 import Docxtemplater from "docxtemplater";
-import { Book } from "../../domain/entities/Book";
-import { Generation } from "../../domain/entities/Generation";
-import { Template } from "../../domain/entities/Template";
-import { IFileStorage } from "../../domain/interfaces/IFileStorage";
-import { exportableQuestions } from "./pdfQuestionHtml";
+import { Book } from "../../domain/entities/Book.js";
+import { Generation } from "../../domain/entities/Generation.js";
+import { Template } from "../../domain/entities/Template.js";
+import { IFileStorage } from "../../domain/interfaces/IFileStorage.js";
+import { exportableQuestions } from "./pdfQuestionHtml.js";
 
 /** Fills a user-uploaded .docx template's `{#questions}...{/questions}` loop (and scalar fields) with generated questions. */
 @injectable()

@@ -1,6 +1,6 @@
 import { inject, injectable } from "tsyringe";
 import { Collection, Db, Document as MongoDocument } from "mongodb";
-import { Chunk, ChunkCatalogEntry, ChunkType, Modality } from "../../../domain/entities/Chunk";
+import { Chunk, ChunkCatalogEntry, ChunkType, Modality } from "../../../domain/entities/Chunk.js";
 import {
   ChunkFilter,
   ChunkTagPatch,
@@ -8,7 +8,7 @@ import {
   PartnerSearchParams,
   ScoredChunk,
   VectorSearchParams,
-} from "../../../domain/interfaces/repositories/IChunkRepository";
+} from "../../../domain/interfaces/repositories/IChunkRepository.js";
 
 const VECTOR_INDEX_NAME = "chunks_vector_index";
 

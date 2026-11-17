@@ -1,11 +1,11 @@
 import { injectable, inject } from "tsyringe";
 import { Request, Response } from "express";
 import { z } from "zod";
-import { Generation } from "../../domain/entities/Generation";
-import { GeneratedQuestion } from "../../domain/entities/GeneratedQuestion";
-import { GenerationService } from "../../application/services/GenerationService";
-import { GenerationEditingService } from "../../application/services/GenerationEditingService";
-import { GenerationExportService } from "../../application/services/GenerationExportService";
+import { Generation } from "../../domain/entities/Generation.js";
+import { GeneratedQuestion } from "../../domain/entities/GeneratedQuestion.js";
+import { GenerationService } from "../../application/services/GenerationService.js";
+import { GenerationEditingService } from "../../application/services/GenerationEditingService.js";
+import { GenerationExportService } from "../../application/services/GenerationExportService.js";
 
 const itemSchema = z.object({
   type: z.enum(["mcq", "short_answer", "long_answer"]),

@@ -1,11 +1,11 @@
 import { inject, injectable } from "tsyringe";
-import { HttpError } from "../../api/HttpError";
-import { IGenerationExporter } from "../../domain/interfaces/IGenerationExporter";
-import { IBookRepository } from "../../domain/interfaces/repositories/IBookRepository";
-import { IGenerationRepository } from "../../domain/interfaces/repositories/IGenerationRepository";
-import { IQuestionPaperTemplateRepository } from "../../domain/interfaces/repositories/IQuestionPaperTemplateRepository";
-import { TemplatedPdfExporter } from "../../infrastructure/export/TemplatedPdfExporter";
-import { DocxTemplateExporter } from "../../infrastructure/export/DocxTemplateExporter";
+import { HttpError } from "../../api/HttpError.js";
+import { IGenerationExporter } from "../../domain/interfaces/IGenerationExporter.js";
+import { IBookRepository } from "../../domain/interfaces/repositories/IBookRepository.js";
+import { IGenerationRepository } from "../../domain/interfaces/repositories/IGenerationRepository.js";
+import { IQuestionPaperTemplateRepository } from "../../domain/interfaces/repositories/IQuestionPaperTemplateRepository.js";
+import { TemplatedPdfExporter } from "../../infrastructure/export/TemplatedPdfExporter.js";
+import { DocxTemplateExporter } from "../../infrastructure/export/DocxTemplateExporter.js";
 
 export interface ExportResult {
   buffer: Buffer;

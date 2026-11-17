@@ -1,7 +1,7 @@
 import { inject, injectable } from "tsyringe";
 import { Collection, Db } from "mongodb";
-import { Book, BookStatus, ChapterRange, TokenUsage } from "../../../domain/entities/Book";
-import { BookPatch, IBookRepository } from "../../../domain/interfaces/repositories/IBookRepository";
+import { Book, BookStatus, ChapterRange, TokenUsage } from "../../../domain/entities/Book.js";
+import { BookPatch, IBookRepository } from "../../../domain/interfaces/repositories/IBookRepository.js";
 
 interface BookDoc {
   _id: string;

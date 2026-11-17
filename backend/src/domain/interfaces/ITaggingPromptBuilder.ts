@@ -12,7 +12,7 @@ export interface TaggingPromptInput {
   chunks: ChunkDraftForTagging[];
 }
 
-import { BuiltPrompt } from "./BuiltPrompt";
+import { BuiltPrompt } from "./BuiltPrompt.js";
 
 export interface ITaggingPromptBuilder {
   build(input: TaggingPromptInput): BuiltPrompt;

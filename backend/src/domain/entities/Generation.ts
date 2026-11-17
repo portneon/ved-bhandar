@@ -1,6 +1,6 @@
-import { TokenUsage } from "./Book";
-import { GeneratedQuestion } from "./GeneratedQuestion";
-import { Difficulty, QuestionType, Slot } from "./Slot";
+import { TokenUsage } from "./Book.js";
+import { GeneratedQuestion } from "./GeneratedQuestion.js";
+import { Difficulty, QuestionType, Slot } from "./Slot.js";
 
 export interface PageSplitRange {
   from: number;

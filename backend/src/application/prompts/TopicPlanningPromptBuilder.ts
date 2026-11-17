@@ -1,6 +1,6 @@
 import { injectable } from "tsyringe";
-import { BuiltPrompt } from "../../domain/interfaces/BuiltPrompt";
-import { ITopicPlanningPromptBuilder, TopicPlanningInput } from "../../domain/interfaces/ITopicPlanningPromptBuilder";
+import { BuiltPrompt } from "../../domain/interfaces/BuiltPrompt.js";
+import { ITopicPlanningPromptBuilder, TopicPlanningInput } from "../../domain/interfaces/ITopicPlanningPromptBuilder.js";
 
 const SYSTEM_PROMPT = `You are a senior, experienced teacher acting as chief examiner for this paper. Before any
 question is written, you plan which topic each question slot should be built from — this is a planning step only,

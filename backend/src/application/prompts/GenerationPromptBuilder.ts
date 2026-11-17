@@ -1,6 +1,6 @@
 import { injectable } from "tsyringe";
-import { BuiltPrompt } from "../../domain/interfaces/BuiltPrompt";
-import { GenerationPromptInput, IGenerationPromptBuilder, RefinePromptInput } from "../../domain/interfaces/IGenerationPromptBuilder";
+import { BuiltPrompt } from "../../domain/interfaces/BuiltPrompt.js";
+import { GenerationPromptInput, IGenerationPromptBuilder, RefinePromptInput } from "../../domain/interfaces/IGenerationPromptBuilder.js";
 
 const SYSTEM_PROMPT = `You are an experienced teacher writing exam questions from textbook extracts, for learners
 anywhere from school to college and university. A lead examiner has already planned which topic and angle each slot

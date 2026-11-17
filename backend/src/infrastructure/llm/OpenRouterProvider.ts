@@ -1,6 +1,6 @@
 import { injectable } from "tsyringe";
 import OpenAI from "openai";
-import { ILlmProvider, LlmCompletion } from "../../domain/interfaces/ILlmProvider";
+import { ILlmProvider, LlmCompletion } from "../../domain/interfaces/ILlmProvider.js";
 
 @injectable()
 export class OpenRouterProvider implements ILlmProvider {

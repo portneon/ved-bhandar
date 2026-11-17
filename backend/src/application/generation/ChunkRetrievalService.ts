@@ -1,11 +1,11 @@
 import { inject, injectable } from "tsyringe";
-import { TYPES_FOR_BLOOM } from "../../domain/constants/typesForBloom";
-import { Chunk } from "../../domain/entities/Chunk";
-import { PageRange, Slot } from "../../domain/entities/Slot";
-import { IEmbeddingProvider } from "../../domain/interfaces/IEmbeddingProvider";
-import { ChunkFilter, IChunkRepository } from "../../domain/interfaces/repositories/IChunkRepository";
-import { weightedSample } from "./weightedSample";
-import { TopicPlanEntry } from "./TopicPlanningService";
+import { TYPES_FOR_BLOOM } from "../../domain/constants/typesForBloom.js";
+import { Chunk } from "../../domain/entities/Chunk.js";
+import { PageRange, Slot } from "../../domain/entities/Slot.js";
+import { IEmbeddingProvider } from "../../domain/interfaces/IEmbeddingProvider.js";
+import { ChunkFilter, IChunkRepository } from "../../domain/interfaces/repositories/IChunkRepository.js";
+import { weightedSample } from "./weightedSample.js";
+import { TopicPlanEntry } from "./TopicPlanningService.js";
 
 const VECTOR_SCORE_THRESHOLD = 0.55;
 const NO_CANDIDATES_REASON =

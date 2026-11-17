@@ -1,10 +1,10 @@
 import { randomUUID } from "crypto";
 import { inject, injectable } from "tsyringe";
 import PizZip from "pizzip";
-import { HttpError } from "../../api/HttpError";
-import { BuilderConfig, Template } from "../../domain/entities/Template";
-import { IFileStorage } from "../../domain/interfaces/IFileStorage";
-import { IQuestionPaperTemplateRepository } from "../../domain/interfaces/repositories/IQuestionPaperTemplateRepository";
+import { HttpError } from "../../api/HttpError.js";
+import { BuilderConfig, Template } from "../../domain/entities/Template.js";
+import { IFileStorage } from "../../domain/interfaces/IFileStorage.js";
+import { IQuestionPaperTemplateRepository } from "../../domain/interfaces/repositories/IQuestionPaperTemplateRepository.js";
 
 export const REQUIRED_DOCX_LOOP_TAG = "{#questions}...{/questions}";
 

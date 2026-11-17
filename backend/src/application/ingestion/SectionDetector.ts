@@ -1,5 +1,5 @@
-import { ChapterRange } from "../../domain/entities/Book";
-import { PdfLine } from "../../domain/interfaces/IPdfProcessor";
+import { ChapterRange } from "../../domain/entities/Book.js";
+import { PdfLine } from "../../domain/interfaces/IPdfProcessor.js";
 
 export interface SectionDraft {
   chapter: number;

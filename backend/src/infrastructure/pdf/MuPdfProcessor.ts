@@ -1,6 +1,6 @@
 import { injectable } from "tsyringe";
 import * as mupdf from "mupdf";
-import { IPdfProcessor, PdfLine } from "../../domain/interfaces/IPdfProcessor";
+import { IPdfProcessor, PdfLine } from "../../domain/interfaces/IPdfProcessor.js";
 
 @injectable()
 export class MuPdfProcessor implements IPdfProcessor {

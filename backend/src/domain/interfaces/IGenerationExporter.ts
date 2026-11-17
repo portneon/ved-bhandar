@@ -1,5 +1,5 @@
-import { Book } from "../entities/Book";
-import { Generation } from "../entities/Generation";
+import { Book } from "../entities/Book.js";
+import { Generation } from "../entities/Generation.js";
 
 export interface IGenerationExporter {
   readonly contentType: string;

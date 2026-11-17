@@ -1,9 +1,9 @@
 import { inject, injectable } from "tsyringe";
-import { IFileStorage } from "../../domain/interfaces/IFileStorage";
-import { IBookRepository } from "../../domain/interfaces/repositories/IBookRepository";
-import { IChunkRepository } from "../../domain/interfaces/repositories/IChunkRepository";
-import { IGenerationRepository } from "../../domain/interfaces/repositories/IGenerationRepository";
-import { IQuestionBankRepository } from "../../domain/interfaces/repositories/IQuestionBankRepository";
+import { IFileStorage } from "../../domain/interfaces/IFileStorage.js";
+import { IBookRepository } from "../../domain/interfaces/repositories/IBookRepository.js";
+import { IChunkRepository } from "../../domain/interfaces/repositories/IChunkRepository.js";
+import { IGenerationRepository } from "../../domain/interfaces/repositories/IGenerationRepository.js";
+import { IQuestionBankRepository } from "../../domain/interfaces/repositories/IQuestionBankRepository.js";
 
 @injectable()
 export class BookDeletionService {

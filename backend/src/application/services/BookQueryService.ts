@@ -1,8 +1,8 @@
 import { inject, injectable } from "tsyringe";
-import { Book } from "../../domain/entities/Book";
-import { QuestionBankEntry } from "../../domain/entities/QuestionBankEntry";
-import { IBookRepository } from "../../domain/interfaces/repositories/IBookRepository";
-import { IQuestionBankRepository } from "../../domain/interfaces/repositories/IQuestionBankRepository";
+import { Book } from "../../domain/entities/Book.js";
+import { QuestionBankEntry } from "../../domain/entities/QuestionBankEntry.js";
+import { IBookRepository } from "../../domain/interfaces/repositories/IBookRepository.js";
+import { IQuestionBankRepository } from "../../domain/interfaces/repositories/IQuestionBankRepository.js";
 
 @injectable()
 export class BookQueryService {

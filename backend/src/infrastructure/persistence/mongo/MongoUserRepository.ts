@@ -1,7 +1,7 @@
 import { inject, injectable } from "tsyringe";
 import { Collection, Db } from "mongodb";
-import { User } from "../../../domain/entities/User";
-import { IUserRepository } from "../../../domain/interfaces/repositories/IUserRepository";
+import { User } from "../../../domain/entities/User.js";
+import { IUserRepository } from "../../../domain/interfaces/repositories/IUserRepository.js";
 
 interface UserDoc {
   _id: string;
