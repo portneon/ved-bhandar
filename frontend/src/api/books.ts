@@ -31,15 +31,40 @@ export interface UploadBookInput {
   chapterHints?: ChapterRange[];
 }
 
-export function uploadBook(input: UploadBookInput): Promise<Book> {
-  const form = new FormData();
-  form.append("file", input.file);
-  form.append("title", input.title);
-  form.append("board", input.board);
-  form.append("grade", input.grade);
-  form.append("subject", input.subject);
+// Vercel rejects request bodies over ~4.5MB, so files above this are split into
+// chunks and sent as separate requests, then reassembled server-side (see
+// backend's ChunkedUploadService). Most uploads stay below this and go in one shot.
+const CHUNK_SIZE = 3 * 1024 * 1024;
+const DIRECT_UPLOAD_LIMIT = 3.5 * 1024 * 1024;
+
+export async function uploadBook(input: UploadBookInput): Promise<Book> {
+  const metadata: Record<string, string> = {
+    title: input.title,
+    board: input.board,
+    grade: input.grade,
+    subject: input.subject,
+  };
   if (input.chapterHints && input.chapterHints.length > 0) {
-    form.append("chapters", JSON.stringify(input.chapterHints));
+    metadata.chapters = JSON.stringify(input.chapterHints);
   }
-  return api.post<Book>("/api/books", form);
+
+  if (input.file.size <= DIRECT_UPLOAD_LIMIT) {
+    const form = new FormData();
+    form.append("file", input.file);
+    for (const [key, value] of Object.entries(metadata)) form.append(key, value);
+    return api.post<Book>("/api/books", form);
+  }
+
+  const uploadId = crypto.randomUUID();
+  const chunkCount = Math.ceil(input.file.size / CHUNK_SIZE);
+  for (let index = 0; index < chunkCount; index++) {
+    const chunk = input.file.slice(index * CHUNK_SIZE, (index + 1) * CHUNK_SIZE);
+    const form = new FormData();
+    form.append("chunk", chunk, `chunk-${index}`);
+    form.append("uploadId", uploadId);
+    form.append("index", String(index));
+    await api.post<void>("/api/books/chunks", form);
+  }
+
+  return api.post<Book>("/api/books", { ...metadata, uploadId, chunkCount: String(chunkCount) });
 }

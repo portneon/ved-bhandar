@@ -8,6 +8,7 @@ import { BookIngestionService } from "../../application/services/BookIngestionSe
 import { BookQueryService } from "../../application/services/BookQueryService.js";
 import { BookDeletionService } from "../../application/services/BookDeletionService.js";
 import { GenerationService } from "../../application/services/GenerationService.js";
+import { ChunkedUploadService } from "../../application/services/ChunkedUploadService.js";
 
 const chapterHintSchema = z.object({
   no: z.number().int(),
@@ -23,17 +24,37 @@ export class BooksController {
     @inject(BookQueryService) private readonly queryService: BookQueryService,
     @inject(BookDeletionService) private readonly deletionService: BookDeletionService,
     @inject(GenerationService) private readonly generationService: GenerationService,
+    @inject(ChunkedUploadService) private readonly chunkedUploadService: ChunkedUploadService,
   ) {}
 
-  upload = async (req: Request, res: Response): Promise<void> => {
+  // Vercel rejects request bodies over ~4.5MB, so large PDFs arrive pre-split: the
+  // frontend POSTs each chunk here first, then calls `upload` with uploadId/chunkCount
+  // instead of a file so it can be reassembled from the chunks (see ChunkedUploadService).
+  uploadChunk = async (req: Request, res: Response): Promise<void> => {
     const file = req.file;
-    if (!file) {
-      res.status(400).json({ error: "No file uploaded" });
+    const { uploadId, index } = req.body as Record<string, string | undefined>;
+    if (!file || !uploadId || index === undefined || Number.isNaN(Number(index))) {
+      res.status(400).json({ error: "uploadId, index and a chunk file are required" });
       return;
     }
-    const { title, board, grade, subject } = req.body as Record<string, string | undefined>;
+    await this.chunkedUploadService.saveChunk(uploadId, Number(index), file.buffer);
+    res.status(204).end();
+  };
+
+  upload = async (req: Request, res: Response): Promise<void> => {
+    const { title, board, grade, subject, uploadId, chunkCount } = req.body as Record<string, string | undefined>;
     if (!title || !board || !grade || !subject) {
       res.status(400).json({ error: "title, board, grade and subject are required" });
+      return;
+    }
+
+    let buffer: Buffer;
+    if (req.file) {
+      buffer = req.file.buffer;
+    } else if (uploadId && chunkCount) {
+      buffer = await this.chunkedUploadService.assembleAndCleanup(uploadId, Number(chunkCount));
+    } else {
+      res.status(400).json({ error: "No file uploaded" });
       return;
     }
 
@@ -53,7 +74,7 @@ export class BooksController {
       board,
       grade,
       subject,
-      buffer: file.buffer,
+      buffer,
       chapterHints,
     });
     res.status(202).json(this.toDto(book));
