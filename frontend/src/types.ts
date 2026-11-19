@@ -113,13 +113,6 @@ export interface QuestionBankEntry {
   updatedAt: string;
 }
 
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  createdAt: string;
-}
-
 export type TemplateKind = "builder" | "docx";
 
 export interface BuilderConfig {

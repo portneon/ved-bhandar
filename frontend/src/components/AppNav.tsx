@@ -1,5 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../auth/AuthContext";
+import { Link } from "react-router-dom";
 import { Brand } from "./Brand";
 import { Breadcrumbs, BreadcrumbItem } from "./Breadcrumbs";
 
@@ -9,14 +8,6 @@ interface AppNavProps {
 }
 
 export function AppNav({ trail }: AppNavProps): JSX.Element {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = (): void => {
-    logout();
-    navigate("/");
-  };
-
   const fullTrail: BreadcrumbItem[] = [{ label: "Library", to: "/app" }, ...(trail ?? [])];
 
   return (
@@ -27,16 +18,6 @@ export function AppNav({ trail }: AppNavProps): JSX.Element {
           <div className="app-nav-links">
             <Link to="/app">Library</Link>
             <Link to="/templates">Templates</Link>
-          </div>
-          <div className="l-nav-ctas app-nav-user">
-            {user && (
-              <>
-                <span className="app-nav-username">{user.name}</span>
-                <button type="button" className="secondary" onClick={handleLogout}>
-                  Log out
-                </button>
-              </>
-            )}
           </div>
         </div>
       </nav>

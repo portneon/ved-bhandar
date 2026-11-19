@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../auth/AuthContext";
 import { Brand } from "../../components/Brand";
 import "./landing.css";
 
@@ -94,8 +93,7 @@ export function LandingPage(): JSX.Element {
   useScrollReveal();
   const stepsRef = useRef<HTMLDivElement>(null);
   useStepsGlow(stepsRef);
-  const { user } = useAuth();
-  const appCtaLabel = user ? "Go to your library" : "Upload a chapter";
+  const appCtaLabel = "Upload a chapter";
   return (
     <div className="landing-page">
       <nav className="l-nav">
@@ -109,10 +107,7 @@ export function LandingPage(): JSX.Element {
           </ul>
           <div className="l-nav-ctas">
             <a className="l-btn l-btn-ghost l-btn-sm" href="#why">Why Ved-Bhandar</a>
-            {!user && <Link className="l-btn l-btn-ghost l-btn-sm" to="/login">Log in</Link>}
-            <Link className="l-btn l-btn-primary l-btn-sm" to={user ? "/app" : "/signup"}>
-              {user ? "Go to library" : "Sign up"}
-            </Link>
+            <Link className="l-btn l-btn-primary l-btn-sm" to="/app">Go to library</Link>
           </div>
         </div>
       </nav>
@@ -128,7 +123,7 @@ export function LandingPage(): JSX.Element {
               is exported.
             </p>
             <div className="l-hero-ctas l-anim-in l-anim-d4">
-              <Link className="l-btn l-btn-primary" to={user ? "/app" : "/signup"}>{appCtaLabel}</Link>
+              <Link className="l-btn l-btn-primary" to="/app">{appCtaLabel}</Link>
               <a className="l-btn l-btn-ghost" href="#how">See how it works</a>
             </div>
           </div>
@@ -422,7 +417,7 @@ export function LandingPage(): JSX.Element {
               <h2>Ready to try it on your own chapter?</h2>
               <p>Upload a textbook, pick a chapter, and see a draft paper before you commit to anything.</p>
               <div className="l-hero-ctas l-center">
-                <Link className="l-btn l-btn-primary" to={user ? "/app" : "/signup"}>{appCtaLabel}</Link>
+                <Link className="l-btn l-btn-primary" to="/app">{appCtaLabel}</Link>
                 <a className="l-btn l-btn-ghost" href="#why">Why Ved-Bhandar</a>
               </div>
             </div>

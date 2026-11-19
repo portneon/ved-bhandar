@@ -25,8 +25,6 @@ import { IGenerationRepository } from "./domain/interfaces/repositories/IGenerat
 import { MongoGenerationRepository } from "./infrastructure/persistence/mongo/MongoGenerationRepository.js";
 import { IQuestionBankRepository } from "./domain/interfaces/repositories/IQuestionBankRepository.js";
 import { MongoQuestionBankRepository } from "./infrastructure/persistence/mongo/MongoQuestionBankRepository.js";
-import { IUserRepository } from "./domain/interfaces/repositories/IUserRepository.js";
-import { MongoUserRepository } from "./infrastructure/persistence/mongo/MongoUserRepository.js";
 import { IQuestionPaperTemplateRepository } from "./domain/interfaces/repositories/IQuestionPaperTemplateRepository.js";
 import { MongoQuestionPaperTemplateRepository } from "./infrastructure/persistence/mongo/MongoQuestionPaperTemplateRepository.js";
 
@@ -36,7 +34,6 @@ export function registerContainer(db: Db): void {
   container.register<IChunkRepository>("IChunkRepository", { useClass: MongoChunkRepository });
   container.register<IGenerationRepository>("IGenerationRepository", { useClass: MongoGenerationRepository });
   container.register<IQuestionBankRepository>("IQuestionBankRepository", { useClass: MongoQuestionBankRepository });
-  container.register<IUserRepository>("IUserRepository", { useClass: MongoUserRepository });
   container.register<IQuestionPaperTemplateRepository>("IQuestionPaperTemplateRepository", {
     useClass: MongoQuestionPaperTemplateRepository,
   });

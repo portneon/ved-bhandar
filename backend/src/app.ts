@@ -2,19 +2,17 @@ import express, { Express, NextFunction, Request, Response } from "express";
 import cors from "cors";
 import { booksRouter } from "./api/routes/books.routes.js";
 import { generationsRouter } from "./api/routes/generations.routes.js";
-import { authRouter } from "./api/routes/auth.routes.js";
 import { templatesRouter } from "./api/routes/templates.routes.js";
-import { requireAuth } from "./api/middleware/requireAuth.js";
+import { attachUser } from "./api/middleware/attachUser.js";
 import { HttpError } from "./api/HttpError.js";
 
 export function createApp(): Express {
   const app = express();
   app.use(cors({ origin: process.env.CORS_ORIGIN ?? "*" }));
   app.use(express.json());
-  app.use("/api/auth", authRouter());
-  app.use("/api/books", requireAuth, booksRouter());
-  app.use("/api/templates", requireAuth, templatesRouter());
-  app.use("/api", requireAuth, generationsRouter());
+  app.use("/api/books", attachUser, booksRouter());
+  app.use("/api/templates", attachUser, templatesRouter());
+  app.use("/api", attachUser, generationsRouter());
   app.get("/health", (_req, res) => res.json({ ok: true }));
 
   // Last-resort safety net: any error that reaches here (sync throw forwarded by
