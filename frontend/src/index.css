@@ -247,6 +247,14 @@ button.icon-button:hover:not(:disabled) {
   grid-template-columns: 1fr 1fr 1fr auto;
 }
 
+/* Grid items default to a min-width of their content size, so a track narrower than an
+   input's intrinsic width pushes it (and everything after it) past the row's edge instead
+   of shrinking it. Let these inputs shrink to fit their track. */
+.chapter-row > input,
+.page-split-row > input {
+  min-width: 0;
+}
+
 .toggle-row {
   display: flex;
   align-items: center;
