@@ -1,4 +1,5 @@
 import { QuestionBankEntry } from "../../entities/QuestionBankEntry.js";
+import { TransactionContext } from "../ITransactionManager.js";
 
 export interface QuestionBankPatch {
   stem?: string;
@@ -13,5 +14,5 @@ export interface IQuestionBankRepository {
   patch(generationId: string, slotId: string, patch: QuestionBankPatch): Promise<void>;
   /** Most recent first. Omit `chapter` for every chapter of the book. */
   findByBook(bookId: string, userId: string, chapter?: number): Promise<QuestionBankEntry[]>;
-  deleteByBookId(bookId: string): Promise<void>;
+  deleteByBookId(bookId: string, ctx?: TransactionContext): Promise<void>;
 }

@@ -1,5 +1,6 @@
 import { Chunk, ChunkCatalogEntry, ChunkType, Modality } from "../../entities/Chunk.js";
 import { PageRange } from "../../entities/Slot.js";
+import { TransactionContext } from "../ITransactionManager.js";
 
 export interface ChunkTagPatch {
   type: ChunkType;
@@ -44,7 +45,7 @@ export interface IChunkRepository {
   insertMany(chunks: Chunk[]): Promise<void>;
   findByBookId(bookId: string): Promise<Chunk[]>;
   findByIds(ids: string[]): Promise<Chunk[]>;
-  deleteByBookId(bookId: string): Promise<void>;
+  deleteByBookId(bookId: string, ctx?: TransactionContext): Promise<void>;
   /** Tagged chunks for the given chapters, as metadata only (no text/embedding) — the "topic catalog" sent to the teacher-planning LLM stage. */
   findCatalog(bookId: string, chapters: number[]): Promise<ChunkCatalogEntry[]>;
   applyTag(id: string, tag: ChunkTagPatch): Promise<void>;

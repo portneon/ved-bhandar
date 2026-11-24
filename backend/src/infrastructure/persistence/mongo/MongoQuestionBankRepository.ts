@@ -1,7 +1,8 @@
 import { inject, injectable } from "tsyringe";
-import { Collection, Db } from "mongodb";
+import { ClientSession, Collection, Db } from "mongodb";
 import { QuestionBankEntry } from "../../../domain/entities/QuestionBankEntry.js";
 import { IQuestionBankRepository, QuestionBankPatch } from "../../../domain/interfaces/repositories/IQuestionBankRepository.js";
+import { TransactionContext } from "../../../domain/interfaces/ITransactionManager.js";
 
 interface QuestionBankDoc extends Omit<QuestionBankEntry, "id"> {
   _id: string;
@@ -40,8 +41,8 @@ export class MongoQuestionBankRepository implements IQuestionBankRepository {
     return docs.map((doc) => this.toDomain(doc));
   }
 
-  async deleteByBookId(bookId: string): Promise<void> {
-    await this.collection.deleteMany({ bookId });
+  async deleteByBookId(bookId: string, ctx?: TransactionContext): Promise<void> {
+    await this.collection.deleteMany({ bookId }, { session: ctx as ClientSession | undefined });
   }
 
   private toDomain(doc: QuestionBankDoc): QuestionBankEntry {

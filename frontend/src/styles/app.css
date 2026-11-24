@@ -236,6 +236,56 @@
   to { transform: rotate(360deg); }
 }
 
+.app-page .book-row-pending { border-style: dashed; }
+
+/* ---------- Upload widget: floating reminder that an upload is still transferring ---------- */
+.app-page .upload-widget {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 50;
+  background: var(--l-surface);
+  border: 1px solid var(--l-border);
+  border-radius: var(--l-radius-lg);
+  box-shadow: var(--l-shadow-md);
+  font-family: var(--l-font-body);
+}
+.app-page .upload-widget-expanded {
+  width: 280px;
+  padding: 14px 16px;
+}
+.app-page .upload-widget-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.app-page .upload-widget-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.app-page .upload-widget-text strong { font-size: 0.88rem; }
+.app-page .upload-widget-text .muted {
+  font-size: 0.8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.app-page .upload-widget-expanded .progress-bar { width: 100%; margin-top: 12px; }
+.app-page .upload-widget-minimized {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--l-ink);
+  background: var(--l-surface);
+}
+.app-page .upload-widget-minimized:hover { opacity: 1; border-color: var(--l-muted); }
+
 /* ---------- Question review / export: one continuous A4 sheet, not boxed cards ---------- */
 .app-page .exam-paper {
   background: var(--l-surface);

@@ -1,6 +1,8 @@
 import "reflect-metadata";
 import { container } from "tsyringe";
-import { Db } from "mongodb";
+import { Db, MongoClient } from "mongodb";
+import { ITransactionManager } from "./domain/interfaces/ITransactionManager.js";
+import { MongoTransactionManager } from "./infrastructure/persistence/mongo/MongoTransactionManager.js";
 import { IFileStorage } from "./domain/interfaces/IFileStorage.js";
 import { MongoFileStorage } from "./infrastructure/storage/MongoFileStorage.js";
 import { IPdfProcessor } from "./domain/interfaces/IPdfProcessor.js";
@@ -28,8 +30,10 @@ import { MongoQuestionBankRepository } from "./infrastructure/persistence/mongo/
 import { IQuestionPaperTemplateRepository } from "./domain/interfaces/repositories/IQuestionPaperTemplateRepository.js";
 import { MongoQuestionPaperTemplateRepository } from "./infrastructure/persistence/mongo/MongoQuestionPaperTemplateRepository.js";
 
-export function registerContainer(db: Db): void {
+export function registerContainer(client: MongoClient, db: Db): void {
+  container.registerInstance<MongoClient>("MongoClient", client);
   container.registerInstance<Db>("Db", db);
+  container.register<ITransactionManager>("ITransactionManager", { useClass: MongoTransactionManager });
   container.register<IBookRepository>("IBookRepository", { useClass: MongoBookRepository });
   container.register<IChunkRepository>("IChunkRepository", { useClass: MongoChunkRepository });
   container.register<IGenerationRepository>("IGenerationRepository", { useClass: MongoGenerationRepository });

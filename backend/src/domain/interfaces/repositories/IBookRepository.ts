@@ -1,4 +1,5 @@
 import { Book, BookStatus, ChapterRange, TokenUsage } from "../../entities/Book.js";
+import { TransactionContext } from "../ITransactionManager.js";
 
 export interface BookPatch {
   status?: BookStatus;
@@ -14,5 +15,5 @@ export interface IBookRepository {
   findAll(userId: string): Promise<Book[]>;
   update(id: string, patch: BookPatch): Promise<void>;
   addTokenUsage(id: string, usage: TokenUsage): Promise<void>;
-  delete(id: string): Promise<void>;
+  delete(id: string, ctx?: TransactionContext): Promise<void>;
 }

@@ -1,5 +1,5 @@
 import { inject, injectable } from "tsyringe";
-import { Collection, Db, Document as MongoDocument } from "mongodb";
+import { ClientSession, Collection, Db, Document as MongoDocument } from "mongodb";
 import { Chunk, ChunkCatalogEntry, ChunkType, Modality } from "../../../domain/entities/Chunk.js";
 import {
   ChunkFilter,
@@ -9,6 +9,7 @@ import {
   ScoredChunk,
   VectorSearchParams,
 } from "../../../domain/interfaces/repositories/IChunkRepository.js";
+import { TransactionContext } from "../../../domain/interfaces/ITransactionManager.js";
 
 const VECTOR_INDEX_NAME = "chunks_vector_index";
 
@@ -70,8 +71,8 @@ export class MongoChunkRepository implements IChunkRepository {
     return docs.map((doc) => this.toDomain(doc));
   }
 
-  async deleteByBookId(bookId: string): Promise<void> {
-    await this.collection.deleteMany({ bookId });
+  async deleteByBookId(bookId: string, ctx?: TransactionContext): Promise<void> {
+    await this.collection.deleteMany({ bookId }, { session: ctx as ClientSession | undefined });
   }
 
   async findCatalog(bookId: string, chapters: number[]): Promise<ChunkCatalogEntry[]> {

@@ -17,6 +17,13 @@ const createBuilderSchema = z.object({
   config: builderConfigSchema,
 });
 
+// .docx files are zip archives; a valid one always starts with the local-file-header signature.
+const ZIP_MAGIC = Buffer.from([0x50, 0x4b, 0x03, 0x04]);
+
+function isDocx(buffer: Buffer): boolean {
+  return buffer.subarray(0, ZIP_MAGIC.length).equals(ZIP_MAGIC);
+}
+
 @injectable()
 export class TemplatesController {
   constructor(@inject(TemplateService) private readonly templateService: TemplateService) {}
@@ -35,6 +42,10 @@ export class TemplatesController {
     const file = req.file;
     if (!file) {
       res.status(400).json({ error: "No file uploaded" });
+      return;
+    }
+    if (!isDocx(file.buffer)) {
+      res.status(400).json({ error: "File is not a valid .docx" });
       return;
     }
     const name = typeof req.body.name === "string" && req.body.name.trim() ? req.body.name.trim() : file.originalname;

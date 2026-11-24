@@ -14,9 +14,9 @@ let appPromise: Promise<Express> | null = null;
 
 function getApp(): Promise<Express> {
   appPromise ??= (async () => {
-    const db = await connectMongo();
+    const { client, db } = await connectMongo();
     await ensureIndexes(db);
-    registerContainer(db);
+    registerContainer(client, db);
     return createApp();
   })();
   return appPromise;

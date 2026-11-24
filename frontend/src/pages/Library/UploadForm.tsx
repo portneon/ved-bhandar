@@ -1,5 +1,5 @@
 import { FormEvent, useState } from "react";
-import { uploadBook } from "../../api/books";
+import { uploadBook, UploadProgress } from "../../api/books";
 
 interface ChapterRow {
   no: string;
@@ -10,7 +10,14 @@ interface ChapterRow {
 
 const emptyRow = (): ChapterRow => ({ no: "", title: "", pageStart: "", pageEnd: "" });
 
-export function UploadForm({ onUploaded }: { onUploaded: () => void }): JSX.Element {
+interface UploadFormProps {
+  onUploaded: () => void;
+  onUploadStart: (title: string) => void;
+  onUploadProgress: (progress: UploadProgress) => void;
+  onUploadDone: () => void;
+}
+
+export function UploadForm({ onUploaded, onUploadStart, onUploadProgress, onUploadDone }: UploadFormProps): JSX.Element {
   const [title, setTitle] = useState("");
   const [board, setBoard] = useState("");
   const [grade, setGrade] = useState("");
@@ -33,6 +40,7 @@ export function UploadForm({ onUploaded }: { onUploaded: () => void }): JSX.Elem
     }
     setSubmitting(true);
     setError(null);
+    onUploadStart(title);
     try {
       const chapterHints = chapterRows
         .filter((row) => row.no && row.pageStart && row.pageEnd)
@@ -42,7 +50,10 @@ export function UploadForm({ onUploaded }: { onUploaded: () => void }): JSX.Elem
           pageStart: Number(row.pageStart),
           pageEnd: Number(row.pageEnd),
         }));
-      await uploadBook({ title, board, grade, subject, file, chapterHints: chapterHints.length > 0 ? chapterHints : undefined });
+      await uploadBook(
+        { title, board, grade, subject, file, chapterHints: chapterHints.length > 0 ? chapterHints : undefined },
+        onUploadProgress,
+      );
       setTitle("");
       setBoard("");
       setGrade("");
@@ -54,6 +65,7 @@ export function UploadForm({ onUploaded }: { onUploaded: () => void }): JSX.Elem
       setError(err instanceof Error ? err.message : "Upload failed");
     } finally {
       setSubmitting(false);
+      onUploadDone();
     }
   };
 

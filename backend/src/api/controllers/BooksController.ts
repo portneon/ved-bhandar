@@ -17,6 +17,14 @@ const chapterHintSchema = z.object({
   pageEnd: z.number().int(),
 });
 
+// Matches the 200MB single-upload cap in books.routes.ts at 4MB per chunk.
+const MAX_CHUNK_COUNT = 50;
+const PDF_MAGIC = Buffer.from("%PDF-", "ascii");
+
+function isPdf(buffer: Buffer): boolean {
+  return buffer.subarray(0, PDF_MAGIC.length).equals(PDF_MAGIC);
+}
+
 @injectable()
 export class BooksController {
   constructor(
@@ -37,7 +45,12 @@ export class BooksController {
       res.status(400).json({ error: "uploadId, index and a chunk file are required" });
       return;
     }
-    await this.chunkedUploadService.saveChunk(uploadId, Number(index), file.buffer);
+    const chunkIndex = Number(index);
+    if (chunkIndex < 0 || chunkIndex >= MAX_CHUNK_COUNT) {
+      res.status(400).json({ error: `index must be between 0 and ${MAX_CHUNK_COUNT - 1}` });
+      return;
+    }
+    await this.chunkedUploadService.saveChunk(uploadId, chunkIndex, file.buffer);
     res.status(204).end();
   };
 
@@ -52,9 +65,19 @@ export class BooksController {
     if (req.file) {
       buffer = req.file.buffer;
     } else if (uploadId && chunkCount) {
-      buffer = await this.chunkedUploadService.assembleAndCleanup(uploadId, Number(chunkCount));
+      const count = Number(chunkCount);
+      if (!Number.isInteger(count) || count <= 0 || count > MAX_CHUNK_COUNT) {
+        res.status(400).json({ error: `chunkCount must be between 1 and ${MAX_CHUNK_COUNT}` });
+        return;
+      }
+      buffer = await this.chunkedUploadService.assembleAndCleanup(uploadId, count);
     } else {
       res.status(400).json({ error: "No file uploaded" });
+      return;
+    }
+
+    if (!isPdf(buffer)) {
+      res.status(400).json({ error: "File is not a valid PDF" });
       return;
     }
 

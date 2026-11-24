@@ -1,7 +1,8 @@
 import { inject, injectable } from "tsyringe";
-import { Collection, Db } from "mongodb";
+import { ClientSession, Collection, Db } from "mongodb";
 import { Book, BookStatus, ChapterRange, TokenUsage } from "../../../domain/entities/Book.js";
 import { BookPatch, IBookRepository } from "../../../domain/interfaces/repositories/IBookRepository.js";
+import { TransactionContext } from "../../../domain/interfaces/ITransactionManager.js";
 
 interface BookDoc {
   _id: string;
@@ -55,8 +56,8 @@ export class MongoBookRepository implements IBookRepository {
     );
   }
 
-  async delete(id: string): Promise<void> {
-    await this.collection.deleteOne({ _id: id });
+  async delete(id: string, ctx?: TransactionContext): Promise<void> {
+    await this.collection.deleteOne({ _id: id }, { session: ctx as ClientSession | undefined });
   }
 
   private toDoc(book: Book): BookDoc {

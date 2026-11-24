@@ -1,13 +1,20 @@
 import { inject, injectable } from "tsyringe";
-import { Db, GridFSBucket } from "mongodb";
+import { ClientSession, Collection, Db, Document as MongoDocument, GridFSBucket, ObjectId } from "mongodb";
 import { IFileStorage } from "../../domain/interfaces/IFileStorage.js";
+import { TransactionContext } from "../../domain/interfaces/ITransactionManager.js";
 
 @injectable()
 export class MongoFileStorage implements IFileStorage {
   private readonly bucket: GridFSBucket;
+  // GridFSBucket.delete() can't take a session, so the transactional path below
+  // deletes from these underlying collections directly instead of via the bucket API.
+  private readonly filesCollection: Collection<MongoDocument>;
+  private readonly chunksCollection: Collection<MongoDocument>;
 
   constructor(@inject("Db") db: Db) {
     this.bucket = new GridFSBucket(db, { bucketName: "files" });
+    this.filesCollection = db.collection("files.files");
+    this.chunksCollection = db.collection("files.chunks");
   }
 
   async save(relativeKey: string, data: Buffer): Promise<string> {
@@ -35,10 +42,15 @@ export class MongoFileStorage implements IFileStorage {
     throw new Error("MongoFileStorage does not support absolute paths");
   }
 
-  async deleteContainingDir(relativeKey: string): Promise<void> {
+  async deleteContainingDir(relativeKey: string, ctx?: TransactionContext): Promise<void> {
+    const session = ctx as ClientSession | undefined;
     const prefix = relativeKey.split("/")[0] + "/";
-    const files = await this.bucket.find({ filename: { $regex: `^${escapeRegExp(prefix)}` } }).toArray();
-    await Promise.all(files.map((file) => this.bucket.delete(file._id)));
+    const filter = { filename: { $regex: `^${escapeRegExp(prefix)}` } };
+    const files = await this.filesCollection.find(filter, { session, projection: { _id: 1 } }).toArray();
+    if (files.length === 0) return;
+    const ids = files.map((file) => file._id as ObjectId);
+    await this.chunksCollection.deleteMany({ files_id: { $in: ids } }, { session });
+    await this.filesCollection.deleteMany({ _id: { $in: ids } }, { session });
   }
 
   private async deleteByFilename(filename: string): Promise<void> {

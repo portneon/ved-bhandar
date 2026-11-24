@@ -16,9 +16,9 @@ process.on("uncaughtException", (error) => {
 });
 
 async function main(): Promise<void> {
-  const db = await connectMongo();
+  const { client, db } = await connectMongo();
   await ensureIndexes(db);
-  registerContainer(db);
+  registerContainer(client, db);
 
   const app = createApp();
   const port = Number(process.env.PORT ?? 4000);

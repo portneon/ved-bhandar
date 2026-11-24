@@ -1,6 +1,7 @@
 import { Generation } from "../../entities/Generation.js";
 import { GeneratedQuestion } from "../../entities/GeneratedQuestion.js";
 import { TokenUsage } from "../../entities/Book.js";
+import { TransactionContext } from "../ITransactionManager.js";
 
 export interface QuestionPatch {
   stem?: string;
@@ -19,5 +20,5 @@ export interface IGenerationRepository {
   addManualQuestion(generationId: string, question: GeneratedQuestion): Promise<void>;
   updateQuestion(generationId: string, slotId: string, patch: QuestionPatch): Promise<void>;
   addTokenUsage(generationId: string, usage: TokenUsage): Promise<void>;
-  deleteByBookId(bookId: string): Promise<void>;
+  deleteByBookId(bookId: string, ctx?: TransactionContext): Promise<void>;
 }

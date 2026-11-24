@@ -55,12 +55,56 @@ function BookListItem({ book, onDelete }: { book: Book; onDelete: (book: Book) =
   );
 }
 
-export function BookList({ books, onDelete }: { books: Book[]; onDelete: (book: Book) => void }): JSX.Element {
-  if (books.length === 0) {
+export interface PendingUpload {
+  title: string;
+  label: string;
+  /** 0-100, or null while there's no meaningful fraction to show yet. */
+  percent: number | null;
+}
+
+/**
+ * Placeholder row for a book that's still transferring to the server — it doesn't have an id yet,
+ * so it can't be a real BookListItem. Keeping it in the same list (rather than only in the floating
+ * upload widget) means minimizing that widget still leaves a visible, animated reminder that work
+ * is in progress, right where the finished book will shortly appear.
+ */
+function PendingBookRow({ title, label, percent }: PendingUpload): JSX.Element {
+  return (
+    <div className="card book-row book-row-pending">
+      <div className="book-row-main">
+        <h3>{title}</h3>
+        <p className="muted">Uploading…</p>
+      </div>
+      <div className="book-row-status">
+        <span className="status-badge-row">
+          <span className="spinner" aria-hidden="true" />
+          <span className="status-badge status-pending">{label}</span>
+        </span>
+        {percent !== null && (
+          <div className="progress-bar" role="progressbar" aria-valuenow={percent} aria-valuemin={0} aria-valuemax={100}>
+            <div className="progress-bar-fill" style={{ width: `${percent}%` }} />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export function BookList({
+  books,
+  onDelete,
+  pending,
+}: {
+  books: Book[];
+  onDelete: (book: Book) => void;
+  pending?: PendingUpload | null;
+}): JSX.Element {
+  if (books.length === 0 && !pending) {
     return <p className="muted">No books uploaded yet.</p>;
   }
   return (
     <div className="book-list">
+      {pending && <PendingBookRow {...pending} />}
       {books.map((book) => (
         <BookListItem key={book.id} book={book} onDelete={onDelete} />
       ))}

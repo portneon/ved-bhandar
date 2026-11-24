@@ -31,13 +31,20 @@ export interface UploadBookInput {
   chapterHints?: ChapterRange[];
 }
 
+/** Reported as the file transfers, so a caller can show real progress instead of a bare spinner. */
+export interface UploadProgress {
+  stage: "uploading" | "finishing";
+  sentChunks: number;
+  totalChunks: number;
+}
+
 // Vercel rejects request bodies over ~4.5MB, so files above this are split into
 // chunks and sent as separate requests, then reassembled server-side (see
 // backend's ChunkedUploadService). Most uploads stay below this and go in one shot.
 const CHUNK_SIZE = 3 * 1024 * 1024;
 const DIRECT_UPLOAD_LIMIT = 3.5 * 1024 * 1024;
 
-export async function uploadBook(input: UploadBookInput): Promise<Book> {
+export async function uploadBook(input: UploadBookInput, onProgress?: (progress: UploadProgress) => void): Promise<Book> {
   const metadata: Record<string, string> = {
     title: input.title,
     board: input.board,
@@ -49,6 +56,7 @@ export async function uploadBook(input: UploadBookInput): Promise<Book> {
   }
 
   if (input.file.size <= DIRECT_UPLOAD_LIMIT) {
+    onProgress?.({ stage: "uploading", sentChunks: 0, totalChunks: 1 });
     const form = new FormData();
     form.append("file", input.file);
     for (const [key, value] of Object.entries(metadata)) form.append(key, value);
@@ -64,7 +72,9 @@ export async function uploadBook(input: UploadBookInput): Promise<Book> {
     form.append("uploadId", uploadId);
     form.append("index", String(index));
     await api.post<void>("/api/books/chunks", form);
+    onProgress?.({ stage: "uploading", sentChunks: index + 1, totalChunks: chunkCount });
   }
 
+  onProgress?.({ stage: "finishing", sentChunks: chunkCount, totalChunks: chunkCount });
   return api.post<Book>("/api/books", { ...metadata, uploadId, chunkCount: String(chunkCount) });
 }

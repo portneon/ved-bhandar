@@ -1,10 +1,11 @@
 import { inject, injectable } from "tsyringe";
-import { Collection, Db } from "mongodb";
+import { ClientSession, Collection, Db } from "mongodb";
 import { TokenUsage } from "../../../domain/entities/Book.js";
 import { Generation, GenerationSettings } from "../../../domain/entities/Generation.js";
 import { GeneratedQuestion } from "../../../domain/entities/GeneratedQuestion.js";
 import { Slot } from "../../../domain/entities/Slot.js";
 import { IGenerationRepository, QuestionPatch } from "../../../domain/interfaces/repositories/IGenerationRepository.js";
+import { TransactionContext } from "../../../domain/interfaces/ITransactionManager.js";
 
 interface GenerationDoc {
   _id: string;
@@ -69,8 +70,8 @@ export class MongoGenerationRepository implements IGenerationRepository {
     );
   }
 
-  async deleteByBookId(bookId: string): Promise<void> {
-    await this.collection.deleteMany({ bookId });
+  async deleteByBookId(bookId: string, ctx?: TransactionContext): Promise<void> {
+    await this.collection.deleteMany({ bookId }, { session: ctx as ClientSession | undefined });
   }
 
   private toDoc(generation: Generation): GenerationDoc {
